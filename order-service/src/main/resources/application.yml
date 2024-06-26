@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: order-service
+  config:
+    import: optional:configserver:http://config-service:8762
+  cloud:
+    config:
+      fail-fast: true
