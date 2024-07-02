@@ -5,13 +5,13 @@ spring:
     config:
       server:
         native:
-          search-locations:
-        git:
-          uri: ${CONFIG_URI}
-          private-key: ${CONFIG_SSH_KEY}
-          default-label: main
-          search-paths: "{application}"
-          ignore-local-ssh-settings: true
+          search-locations: resources/configs
+#        git:
+#          uri: ${CONFIG_URI}
+#          private-key: ${CONFIG_SSH_KEY}
+#          default-label: main
+#          search-paths: "{application}"
+#          ignore-local-ssh-settings: true
 
 eureka:
   client:
