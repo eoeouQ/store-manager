@@ -50,9 +50,6 @@ services:
     container_name: config-service
     build: ../config-service
     restart: on-failure
-    environment:
-      CONFIG_URI: ${CONFIG_URI}
-      CONFIG_SSH_KEY: ${CONFIG_SSH_KEY}
 
   gateway-service:
     container_name: gateway-service
