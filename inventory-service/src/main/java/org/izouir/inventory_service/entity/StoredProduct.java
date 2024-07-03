@@ -19,13 +19,13 @@ public class StoredProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES products (id)")
+    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
     Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES stores (id)")
+    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
     Store store;
 
-    @Column(name = "quantity", columnDefinition = "INT CHECK ( stored >= 0 )")
+    @Column(name = "quantity", columnDefinition = "INT CHECK ( quantity >= 0 )")
     Integer quantity;
 }
