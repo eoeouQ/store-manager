@@ -5,23 +5,27 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @Builder
-@Schema(description = "Заказ")
+@Schema(description = "Order")
 public class OrderDto {
-    @Schema(description = "Идентификатор заказа", example = "1")
+    @Schema(description = "Order ID", example = "1")
     private Long id;
 
-    @Schema(description = "Заказываемый продукт")
-    private StoredProductDto storedProduct;
+    @Schema(description = "User ID made an order", example = "1")
+    private Long userId;
 
-    @Schema(description = "Статус заказа", example = "STATUS_CREATED")
+    @Schema(description = "Order total price", example = "100")
+    private Integer totalPrice;
+
+    @Schema(description = "Order status", example = "STATUS_CREATED")
     private String status;
 
-    @Schema(description = "Заказываемое количество", example = "10")
-    private Integer quantity;
+    @Schema(description = "Order date", example = "2024-10-10 01:02:03.123456789")
+    private Timestamp date;
 
-    @Schema(description = "Время размещения заказа", example = "2024-10-10 01:02:03.123456789")
-    private Timestamp placedAt;
+    @Schema(description = "Order positions")
+    private List<OrderPositionDto> positions;
 }
