@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
 import org.izouir.inventory_service.dto.StoredProductDto;
 import org.izouir.inventory_service.service.StoredProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/stored-products")
 @RequiredArgsConstructor
-@Tag(name = "Менеджмент хранимых продуктов")
+@Tag(name = "Stored product management")
 public class StoredProductController {
     private final StoredProductService storedProductService;
 
-    @Operation(summary = "Добавить партию продукта на склад")
+    @Operation(summary = "Add quantity of stored product to the store")
     @PostMapping("/add")
-    public StoredProductDto addAmount(@RequestBody final ChangeAmountRequestDto request) {
-        return storedProductService.addAmount(request);
+    public ResponseEntity<StoredProductDto> addAmount(@RequestBody final ChangeAmountRequestDto request) {
+        return new ResponseEntity<>(storedProductService.addAmount(request), HttpStatus.OK);
     }
 
-    @Operation(summary = "Убрать партию продукта со склада")
+    @Operation(summary = "Subtract quantity of stored product from the store")
     @PostMapping("/subtract")
-    public StoredProductDto subtractAmount(@RequestBody final ChangeAmountRequestDto request) {
-        return storedProductService.subtractAmount(request);
+    public ResponseEntity<StoredProductDto> subtractAmount(@RequestBody final ChangeAmountRequestDto request) {
+        return new ResponseEntity<>(storedProductService.subtractAmount(request), HttpStatus.OK);
     }
 }
