@@ -4,13 +4,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
-@Schema(description = "Запрос на размещение заказа")
+@Schema(description = "Request of placing new order")
 public class PlaceOrderRequestDto {
-    @Schema(description = "Идентификатор заказываемого продукта", example = "1")
-    private Long storedProductId;
+    @Schema(description = "User ID made an order", example = "1")
+    private Long userId;
 
-    @Schema(description = "Количество продукта", example = "10")
-    private Integer quantity;
+    @Schema(description = "Order positions")
+    private List<OrderPositionDto> positions;
 }
