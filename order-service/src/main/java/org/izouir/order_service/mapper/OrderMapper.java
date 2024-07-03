@@ -1,16 +1,19 @@
 package org.izouir.order_service.mapper;
 
+import lombok.experimental.UtilityClass;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.entity.Order;
 
+@UtilityClass
 public class OrderMapper {
-    public static OrderDto toDto(final Order order) {
+    public OrderDto toDto(final Order order) {
         return OrderDto.builder()
                 .id(order.getId())
-                .storedProduct(StoredProductMapper.toDto(order.getStoredProduct()))
+                .userId(order.getUserId())
+                .totalPrice(order.getTotalPrice())
                 .status(String.valueOf(order.getStatus()))
-                .quantity(order.getQuantity())
-                .placedAt(order.getPlacedAt())
+                .date(order.getDate())
+                .positions(OrderPositionMapper.toDtoList(order.getPositions()))
                 .build();
     }
 }
