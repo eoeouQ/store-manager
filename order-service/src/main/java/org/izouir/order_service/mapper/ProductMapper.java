@@ -1,10 +1,12 @@
 package org.izouir.order_service.mapper;
 
+import lombok.experimental.UtilityClass;
 import org.izouir.order_service.dto.ProductDto;
 import org.izouir.order_service.entity.Product;
 
+@UtilityClass
 public class ProductMapper {
-    public static ProductDto toDto(final Product product) {
+    public ProductDto toDto(final Product product) {
         return ProductDto.builder()
                 .id(product.getId())
                 .label(product.getLabel())
