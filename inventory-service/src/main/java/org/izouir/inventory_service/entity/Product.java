@@ -6,23 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "BIGSERIAL PRIMARY KEY")
     private Long id;
 
-    @Column(name = "label", columnDefinition = "VARCHAR(32) UNIQUE NOT NULL")
+    @Column(name = "label", columnDefinition = "VARCHAR(64) UNIQUE NOT NULL")
     private String label;
 
-    @Column(name = "price", columnDefinition = "NUMERIC NOT NULL CHECK ( price > 0 )")
-    private BigDecimal price;
+    @Column(name = "price", columnDefinition = "INT NOT NULL CHECK ( price > 0 )")
+    private Integer price;
 }
