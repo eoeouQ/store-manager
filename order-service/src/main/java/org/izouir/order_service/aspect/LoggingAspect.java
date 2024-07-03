@@ -15,7 +15,7 @@ public class LoggingAspect {
 
     @Before("execution(* org.izouir.order_service.controller.advice.*.*(..))")
     public void beforeAllExceptionHandlingAdvices(final JoinPoint joinPoint) {
-        final var e = (RuntimeException) joinPoint.getArgs()[0];
-        logger.error(e.getMessage());
+        final var exception = (RuntimeException) joinPoint.getArgs()[0];
+        logger.error(exception.getMessage());
     }
 }
