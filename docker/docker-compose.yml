@@ -64,6 +64,16 @@ services:
       - order-service
     network_mode: "service:network-bridge"
 
+  db-migration-service:
+    container_name: db-migration-service
+    build: ../db-migration-service
+    environment:
+      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_FLYWAY_USER: ${POSTGRES_USER}
+      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - database
+
   product-service:
     container_name: product-service
     build: ../product-service
@@ -72,12 +82,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_FLYWAY_USER: ${POSTGRES_USER}
-      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       - discovery-service
-      - database
+      - db-migration-service
 
   inventory-service:
     container_name: inventory-service
@@ -87,12 +94,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_FLYWAY_USER: ${POSTGRES_USER}
-      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       - discovery-service
-      - database
+      - db-migration-service
 
   order-service:
     container_name: order-service
@@ -102,10 +106,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_FLYWAY_USER: ${POSTGRES_USER}
-      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
       INVENTORY_URL: lb://inventory-service/api/v1/stored-products
     depends_on:
       - discovery-service
-      - database
+      - db-migration-service
