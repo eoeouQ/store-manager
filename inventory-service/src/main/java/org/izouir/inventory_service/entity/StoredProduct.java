@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "stored_products")
+@Table(name = "stored_product")
 public class StoredProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,6 @@ public class StoredProduct {
     @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES stores (id)")
     Store store;
 
-    @Column(name = "stored", columnDefinition = "INTEGER CHECK ( stored >= 0 )")
-    Integer stored;
+    @Column(name = "quantity", columnDefinition = "INT CHECK ( stored >= 0 )")
+    Integer quantity;
 }
