@@ -6,10 +6,12 @@ import org.izouir.order_service.dto.ChangeAmountRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.entity.Order;
+import org.izouir.order_service.entity.OrderPosition;
 import org.izouir.order_service.entity.OrderStatus;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.exception.StoredProductNotFoundException;
 import org.izouir.order_service.mapper.OrderMapper;
+import org.izouir.order_service.repository.OrderPositionRepository;
 import org.izouir.order_service.repository.OrderRepository;
 import org.izouir.order_service.repository.StoredProductRepository;
 import org.springframework.stereotype.Service;
@@ -25,34 +27,56 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderPositionRepository orderPositionRepository;
     private final StoredProductRepository storedProductRepository;
     private final WebClient inventoryWebClient;
 
+    private static final String ORDER_NOT_FOUND_MESSAGE = "Order with id = %s not found";
+    private static final String STORED_PRODUCT_NOT_FOUND_MESSAGE = "Stored product with id = %s not found";
+
     @Transactional
     public OrderDto place(final PlaceOrderRequestDto request) {
-        inventoryWebClient.post()
-                .uri("/subtract")
-                .bodyValue(BodyInserters.fromValue(ChangeAmountRequestDto.builder()
-                        .storedProductId(request.getStoredProductId())
-                        .amount(request.getQuantity())
-                        .build()))
-                .retrieve();
+        var totalPrice = 0;
+        for (final var orderPositionDto : request.getPositions()) {
+            inventoryWebClient.post()
+                    .uri("/subtract")
+                    .bodyValue(BodyInserters.fromValue(ChangeAmountRequestDto.builder()
+                            .storedProductId(orderPositionDto.getStoredProduct().getId())
+                            .amount(orderPositionDto.getQuantity())
+                            .build()))
+                    .retrieve();
 
-        final var order = Order.builder()
+            totalPrice += orderPositionDto.getQuantity();
+        }
+
+        var order = Order.builder()
+                .userId(request.getUserId())
+                .totalPrice(totalPrice)
                 .status(OrderStatus.STATUS_CREATED)
-                .storedProduct(storedProductRepository.findById(request.getStoredProductId()).orElseThrow(
-                        () -> new StoredProductNotFoundException(
-                                "Stored product with id = " + request.getStoredProductId() + " not found")))
-                .quantity(request.getQuantity())
-                .placedAt(Timestamp.from(Instant.now()))
+                .date(Timestamp.from(Instant.now()))
                 .build();
-        return OrderMapper.toDto(orderRepository.save(order));
+        order = orderRepository.save(order);
+        final var orderId = order.getId();
+
+        for (final var orderPositionDto : request.getPositions()) {
+            final var storedProductId = orderPositionDto.getStoredProduct().getId();
+            final var orderPosition = OrderPosition.builder()
+                    .storedProduct(storedProductRepository.findById(storedProductId)
+                            .orElseThrow(() -> new StoredProductNotFoundException(
+                                    String.format(STORED_PRODUCT_NOT_FOUND_MESSAGE, storedProductId))))
+                    .order(order)
+                    .quantity(orderPositionDto.getQuantity())
+                    .build();
+            orderPositionRepository.save(orderPosition);
+        }
+        return OrderMapper.toDto(orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(String.format(ORDER_NOT_FOUND_MESSAGE, orderId))));
     }
 
     @Transactional
     public OrderDto updateStatus(final Long orderId, final String status) {
-        final var order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderNotFoundException("Order with id = " + orderId + " not found"));
+        final var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(String.format(ORDER_NOT_FOUND_MESSAGE, orderId)));
         order.setStatus(OrderStatus.valueOf(status));
         return OrderMapper.toDto(orderRepository.save(order));
     }
@@ -60,7 +84,7 @@ public class OrderService {
     @Transactional
     public List<OrderDto> getOrderHistory() {
         return orderRepository.findAll().stream()
-                .sorted(Comparator.comparing(Order::getPlacedAt))
+                .sorted(Comparator.comparing(Order::getDate))
                 .map(OrderMapper::toDto)
                 .toList();
     }
