@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.izouir.product_service.dto.ProductDto;
 import org.izouir.product_service.service.ProductService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,38 +14,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
-@Tag(name = "Менеджмент продуктов")
+@Tag(name = "Product management")
 public class ProductController {
     private final ProductService productService;
 
-    @Operation(summary = "Найти все продукты")
+    @Operation(summary = "Find all products")
     @GetMapping
-    public List<ProductDto> findAll() {
-        return productService.findAll();
+    public ResponseEntity<List<ProductDto>> findAll() {
+        return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
-    @Operation(summary = "Найти продукт по id")
+    @Operation(summary = "Find product by ID")
     @GetMapping("/{productId}")
-    public ProductDto find(@PathVariable("productId") final Long productId) {
-        return productService.find(productId);
+    public ResponseEntity<ProductDto> find(@PathVariable("productId") final Long productId) {
+        return new ResponseEntity<>(productService.find(productId), HttpStatus.OK);
     }
 
-    @Operation(summary = "Создание продукта")
+    @Operation(summary = "Product creation")
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public ProductDto save(@RequestBody final ProductDto product) {
-        return productService.save(product);
+    public ResponseEntity<ProductDto> save(@RequestBody final ProductDto product) {
+        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Обновление продукта")
+    @Operation(summary = "Product update")
     @PutMapping
-    public ProductDto update(@RequestBody final ProductDto product) {
-        return productService.update(product);
+    public ResponseEntity<ProductDto> update(@RequestBody final ProductDto product) {
+        return new ResponseEntity<>(productService.update(product), HttpStatus.OK);
     }
 
-    @Operation(summary = "Удаление продукта по id")
+    @Operation(summary = "Product deletion by id")
     @DeleteMapping("/{productId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @ResponseStatus(value = HttpStatus.OK)
     public void delete(@PathVariable("productId") final Long productId) {
         productService.delete(productId);
     }
