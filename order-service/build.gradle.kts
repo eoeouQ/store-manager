@@ -29,10 +29,6 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.springframework:spring-orm:6.1.9")
 
-    // Flyway
-    implementation("org.flywaydb:flyway-core:10.7.2")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.7.2")
-
     // Open API
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 }
