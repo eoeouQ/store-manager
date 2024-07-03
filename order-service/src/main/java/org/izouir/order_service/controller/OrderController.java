@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.service.OrderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,25 +15,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
-@Tag(name = "Сервис заказов")
+@Tag(name = "Order service")
 public class OrderController {
     private final OrderService orderService;
 
-    @Operation(summary = "Размещение заказа")
+    @Operation(summary = "Order placement")
     @PostMapping
-    public OrderDto place(@RequestBody final PlaceOrderRequestDto request) {
-        return orderService.place(request);
+    public ResponseEntity<OrderDto> place(@RequestBody final PlaceOrderRequestDto request) {
+        return new ResponseEntity<>(orderService.place(request), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Обновление статуса заказа")
+    @Operation(summary = "Order status update")
     @PutMapping("/{orderId}")
-    public OrderDto updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
-        return orderService.updateStatus(orderId, status);
+    public ResponseEntity<OrderDto> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
+        return new ResponseEntity<>(orderService.updateStatus(orderId, status), HttpStatus.OK);
     }
 
-    @Operation(summary = "История заказов")
+    @Operation(summary = "Order history")
     @GetMapping("/history")
-    public List<OrderDto> getOrderHistory() {
-        return orderService.getOrderHistory();
+    public ResponseEntity<List<OrderDto>> getOrderHistory() {
+        return new ResponseEntity<>(orderService.getOrderHistory(), HttpStatus.OK);
     }
 }
