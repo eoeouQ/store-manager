@@ -12,26 +12,29 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class StoredProductService {
-    private final StoredProductRepository repository;
+    private final StoredProductRepository storedProductRepository;
+
+    private static final String STORED_PRODUCT_NOT_FOUND_MESSAGE = "Stored product with id %s not found";
+    private static final String EXCEEDING_CHANGE_AMOUNT_MESSAGE = "Change amount exceeds the stored one";
 
     @Transactional
     public StoredProductDto addAmount(final ChangeAmountRequestDto request) {
-        final var storedProduct = repository.findById(request.getStoredProductId()).orElseThrow(
-                () -> new StoredProductNotFoundException(
-                        "Stored product with id " + request.getStoredProductId() + " not found"));
-        storedProduct.setStored(storedProduct.getStored() + request.getAmount());
-        return StoredProductMapper.toDto(repository.save(storedProduct));
+        final var storedProduct = storedProductRepository.findById(request.getStoredProductId())
+                .orElseThrow(() -> new StoredProductNotFoundException(
+                        String.format(STORED_PRODUCT_NOT_FOUND_MESSAGE, request.getStoredProductId())));
+        storedProduct.setQuantity(storedProduct.getQuantity() + request.getAmount());
+        return StoredProductMapper.toDto(storedProductRepository.save(storedProduct));
     }
 
     @Transactional
     public StoredProductDto subtractAmount(final ChangeAmountRequestDto request) {
-        final var storedProduct = repository.findById(request.getStoredProductId()).orElseThrow(
-                () -> new StoredProductNotFoundException(
-                        "Stored product with id " + request.getStoredProductId() + " not found"));
-        if (storedProduct.getStored() - request.getAmount() < 0) {
-            throw new IllegalArgumentException("Change amount is greater than stored one");
+        final var storedProduct = storedProductRepository.findById(request.getStoredProductId())
+                .orElseThrow(() -> new StoredProductNotFoundException(
+                        String.format(STORED_PRODUCT_NOT_FOUND_MESSAGE, request.getStoredProductId())));
+        if (storedProduct.getQuantity() - request.getAmount() < 0) {
+            throw new IllegalArgumentException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
         }
-        storedProduct.setStored(storedProduct.getStored() - request.getAmount());
-        return StoredProductMapper.toDto(repository.save(storedProduct));
+        storedProduct.setQuantity(storedProduct.getQuantity() - request.getAmount());
+        return StoredProductMapper.toDto(storedProductRepository.save(storedProduct));
     }
 }
