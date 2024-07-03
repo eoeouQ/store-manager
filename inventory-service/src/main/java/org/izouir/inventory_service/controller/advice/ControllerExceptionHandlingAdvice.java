@@ -13,10 +13,10 @@ import java.time.Instant;
 public class ControllerExceptionHandlingAdvice {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDto handleRuntimeException(final RuntimeException e) {
+    public ErrorDto handleRuntimeException(final RuntimeException exception) {
         return ErrorDto.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
-                .message(e.getMessage())
+                .message(exception.getMessage())
                 .timestamp(Timestamp.from(Instant.now()))
                 .build();
     }
