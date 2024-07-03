@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "stored_products")
+@Table(name = "stored_product")
 public class StoredProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,13 +19,13 @@ public class StoredProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES products (id)")
+    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
     Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES stores (id)")
+    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
     Store store;
 
-    @Column(name = "stored", columnDefinition = "INTEGER CHECK ( stored >= 0 )")
-    Integer stored;
+    @Column(name = "quantity", columnDefinition = "INT CHECK ( quantity >= 0 )")
+    Integer quantity;
 }
