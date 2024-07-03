@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(description = "Запрос на изменение количества хранимого товара")
+@Schema(description = "Request of changing stored product quantity")
 public class ChangeAmountRequestDto {
-    @Schema(description = "Идентификатор хранимого продукта", example = "1")
+    @Schema(description = "Stored product ID", example = "1")
     private Long storedProductId;
 
-    @Schema(description = "Количество", example = "10")
+    @Schema(description = "Amount of change", example = "10")
     private Integer amount;
 }
