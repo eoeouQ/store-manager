@@ -6,17 +6,17 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(description = "Хранимый продукт")
+@Schema(description = "Stored product")
 public class StoredProductDto {
-    @Schema(description = "Идентификатор хранимого продукта", example = "1")
+    @Schema(description = "Stored product ID", example = "1")
     private Long id;
 
-    @Schema(description = "Продукт")
+    @Schema(description = "Product")
     private ProductDto product;
 
-    @Schema(description = "Идентификатор склада", example = "1")
+    @Schema(description = "Store ID", example = "1")
     private Long storeId;
 
-    @Schema(description = "Остаток на складе", example = "10")
-    private Integer stored;
+    @Schema(description = "Product count left in store", example = "10")
+    private Integer quantity;
 }
