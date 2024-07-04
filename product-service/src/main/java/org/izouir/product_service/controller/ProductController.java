@@ -1,49 +1,43 @@
 package org.izouir.product_service.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.izouir.product_service.controller.api.ProductAPI;
 import org.izouir.product_service.dto.ProductDto;
 import org.izouir.product_service.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
-@Tag(name = "Product management")
-public class ProductController {
+public class ProductController implements ProductAPI {
     private final ProductService productService;
 
-    @Operation(summary = "Find all products")
-    @GetMapping
+    @Override
     public ResponseEntity<List<ProductDto>> findAll() {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
-    @Operation(summary = "Find product by ID")
-    @GetMapping("/{productId}")
+    @Override
     public ResponseEntity<ProductDto> find(@PathVariable("productId") final Long productId) {
         return new ResponseEntity<>(productService.find(productId), HttpStatus.OK);
     }
 
-    @Operation(summary = "Product creation")
-    @PostMapping
+    @Override
     public ResponseEntity<ProductDto> save(@RequestBody final ProductDto product) {
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Product update")
-    @PutMapping
+    @Override
     public ResponseEntity<ProductDto> update(@RequestBody final ProductDto product) {
         return new ResponseEntity<>(productService.update(product), HttpStatus.OK);
     }
 
-    @Operation(summary = "Product deletion by id")
-    @DeleteMapping("/{productId}")
+    @Override
     public ResponseEntity<Void> delete(@PathVariable("productId") final Long productId) {
         productService.delete(productId);
         return new ResponseEntity<>(HttpStatus.OK);
