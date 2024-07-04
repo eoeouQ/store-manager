@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Schema(description = "Error")
 public class ErrorDto {
     @Schema(description = "Error code", example = "500")
-    private int code;
+    private Integer code;
 
     @Schema(description = "Error message", example = "The request parameter {parameterName} is missing...")
     private String message;
