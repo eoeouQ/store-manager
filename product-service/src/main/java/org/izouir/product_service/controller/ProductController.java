@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 @Tag(name = "Product management")
 public class ProductController {
@@ -44,8 +44,8 @@ public class ProductController {
 
     @Operation(summary = "Product deletion by id")
     @DeleteMapping("/{productId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void delete(@PathVariable("productId") final Long productId) {
+    public ResponseEntity<Void> delete(@PathVariable("productId") final Long productId) {
         productService.delete(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
