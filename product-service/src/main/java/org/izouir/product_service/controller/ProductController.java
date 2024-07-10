@@ -1,5 +1,6 @@
 package org.izouir.product_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.izouir.product_service.controller.api.ProductAPI;
 import org.izouir.product_service.dto.ProductDto;
@@ -28,12 +29,12 @@ public class ProductController implements ProductAPI {
     }
 
     @Override
-    public ResponseEntity<ProductDto> save(@RequestBody final ProductDto product) {
+    public ResponseEntity<ProductDto> save(@RequestBody @Valid final ProductDto product) {
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<ProductDto> update(@RequestBody final ProductDto product) {
+    public ResponseEntity<ProductDto> update(@RequestBody @Valid final ProductDto product) {
         return new ResponseEntity<>(productService.update(product), HttpStatus.OK);
     }
 
