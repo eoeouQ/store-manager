@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDto update(final ProductDto productDto) {
-        final var product = productRepository.findById(productDto.getId()).orElseThrow(
+        var product = productRepository.findById(productDto.getId()).orElseThrow(
                 () -> new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND_MESSAGE, productDto.getId())));
         if (productDto.getLabel() != null) {
             product.setLabel(productDto.getLabel());
@@ -50,7 +50,8 @@ public class ProductServiceImpl implements ProductService {
         if (productDto.getPrice() != null) {
             product.setPrice(productDto.getPrice());
         }
-        return ProductMapper.toDto(productRepository.save(product));
+        product = productRepository.save(product);
+        return ProductMapper.toDto(product);
     }
 
     @Override
