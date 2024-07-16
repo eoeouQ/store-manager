@@ -53,7 +53,34 @@ public class ProductServiceImplTest {
                 .label("TEST3")
                 .price(3)
                 .build());
+    }
 
+    @Test
+    public void findAll_ShouldFind() {
+        when(productRepository.findAll())
+                .thenReturn(products);
+
+        final var returnedProductDtos = productService.findAll();
+
+        assertNotNull(returnedProductDtos);
+        assertEquals(3, returnedProductDtos.size());
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void findAll_ShouldNotFound() {
+        when(productRepository.findAll())
+                .thenReturn(new ArrayList<>());
+
+        final var returnedProductDtos = productService.findAll();
+
+        assertNotNull(returnedProductDtos);
+        assertEquals(0, returnedProductDtos.size());
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void findById_ShouldFind() {
         when(productRepository.findById(Mockito.any(Long.class)))
                 .thenAnswer(invocation -> {
                     final var inputId = (Long) invocation.getArgument(0);
@@ -62,6 +89,30 @@ public class ProductServiceImplTest {
                             .findFirst();
                 });
 
+        final var returnedProductDto = productService.find(1L);
+
+        assertNotNull(returnedProductDto);
+        assertEquals(1L, returnedProductDto.getId());
+        verify(productRepository, times(1)).findById(Mockito.any(Long.class));
+    }
+
+    @Test
+    public void findById_ShouldNotFound() {
+        when(productRepository.findById(Mockito.any(Long.class)))
+                .thenAnswer(invocation -> {
+                    final var inputId = (Long) invocation.getArgument(0);
+                    return products.stream()
+                            .filter(product -> product.getId().equals(inputId))
+                            .findFirst();
+                });
+
+        assertThrows(ProductNotFoundException.class, () -> productService.find(-1L));
+        assertThrows(ProductNotFoundException.class, () -> productService.find(10L));
+        verify(productRepository, times(2)).findById(Mockito.any(Long.class));
+    }
+
+    @Test
+    public void save_ShouldSave() {
         when(productRepository.save(Mockito.any(Product.class)))
                 .thenAnswer(invocation -> {
                     final var inputProduct = (Product) invocation.getArgument(0);
@@ -78,50 +129,7 @@ public class ProductServiceImplTest {
                     products.add(inputProduct);
                     return inputProduct;
                 });
-    }
 
-    @Test
-    public void findAll_ShouldFind() {
-        when(productRepository.findAll())
-                .thenReturn(products);
-
-        final var returnedProductDtos = productService.findAll();
-
-        assertNotNull(returnedProductDtos);
-        assertEquals(3, returnedProductDtos.size());
-        verify(productRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void findAll_ShouldNotFind() {
-        when(productRepository.findAll())
-                .thenReturn(new ArrayList<>());
-
-        final var returnedProductDtos = productService.findAll();
-
-        assertNotNull(returnedProductDtos);
-        assertEquals(0, returnedProductDtos.size());
-        verify(productRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void findById_ShouldFind() {
-        final var returnedProductDto = productService.find(1L);
-
-        assertNotNull(returnedProductDto);
-        assertEquals(1L, returnedProductDto.getId());
-        verify(productRepository, times(1)).findById(Mockito.any(Long.class));
-    }
-
-    @Test
-    public void findById_ShouldNotFind() {
-        assertThrows(ProductNotFoundException.class, () -> productService.find(-1L));
-        assertThrows(ProductNotFoundException.class, () -> productService.find(10L));
-        verify(productRepository, times(2)).findById(Mockito.any(Long.class));
-    }
-
-    @Test
-    public void save_ShouldSave() {
         final var productDto = ProductDto.builder()
                 .id(4L)
                 .label("TEST4")
@@ -136,6 +144,23 @@ public class ProductServiceImplTest {
 
     @Test
     public void save_ShouldNotSave() {
+        when(productRepository.save(Mockito.any(Product.class)))
+                .thenAnswer(invocation -> {
+                    final var inputProduct = (Product) invocation.getArgument(0);
+                    if (products.stream().noneMatch(
+                            product -> product.getId().equals(inputProduct.getId()))
+                            && (inputProduct.getId() == null
+                            || inputProduct.getLabel() == null
+                            || inputProduct.getPrice() == null)) {
+                        throw new IllegalArgumentException();
+                    }
+                    products = new ArrayList<>(products.stream()
+                            .filter(product -> !product.getId().equals(inputProduct.getId()))
+                            .toList());
+                    products.add(inputProduct);
+                    return inputProduct;
+                });
+
         final var productDto = ProductDto.builder()
                 .id(null)
                 .label(null)
@@ -150,6 +175,30 @@ public class ProductServiceImplTest {
 
     @Test
     public void updateFull_ShouldUpdate() {
+        when(productRepository.findById(Mockito.any(Long.class)))
+                .thenAnswer(invocation -> {
+                    final var inputId = (Long) invocation.getArgument(0);
+                    return products.stream()
+                            .filter(product -> product.getId().equals(inputId))
+                            .findFirst();
+                });
+        when(productRepository.save(Mockito.any(Product.class)))
+                .thenAnswer(invocation -> {
+                    final var inputProduct = (Product) invocation.getArgument(0);
+                    if (products.stream().noneMatch(
+                            product -> product.getId().equals(inputProduct.getId()))
+                            && (inputProduct.getId() == null
+                            || inputProduct.getLabel() == null
+                            || inputProduct.getPrice() == null)) {
+                        throw new IllegalArgumentException();
+                    }
+                    products = new ArrayList<>(products.stream()
+                            .filter(product -> !product.getId().equals(inputProduct.getId()))
+                            .toList());
+                    products.add(inputProduct);
+                    return inputProduct;
+                });
+
         final var productDto = ProductDto.builder()
                 .id(2L)
                 .label("TEST_UPDATE")
@@ -167,6 +216,30 @@ public class ProductServiceImplTest {
 
     @Test
     public void updatePartial_ShouldUpdate() {
+        when(productRepository.findById(Mockito.any(Long.class)))
+                .thenAnswer(invocation -> {
+                    final var inputId = (Long) invocation.getArgument(0);
+                    return products.stream()
+                            .filter(product -> product.getId().equals(inputId))
+                            .findFirst();
+                });
+        when(productRepository.save(Mockito.any(Product.class)))
+                .thenAnswer(invocation -> {
+                    final var inputProduct = (Product) invocation.getArgument(0);
+                    if (products.stream().noneMatch(
+                            product -> product.getId().equals(inputProduct.getId()))
+                            && (inputProduct.getId() == null
+                            || inputProduct.getLabel() == null
+                            || inputProduct.getPrice() == null)) {
+                        throw new IllegalArgumentException();
+                    }
+                    products = new ArrayList<>(products.stream()
+                            .filter(product -> !product.getId().equals(inputProduct.getId()))
+                            .toList());
+                    products.add(inputProduct);
+                    return inputProduct;
+                });
+
         var productDto = ProductDto.builder()
                 .id(2L)
                 .label("TEST_UPDATE")
@@ -194,6 +267,30 @@ public class ProductServiceImplTest {
 
     @Test
     public void updateNonexistent_ShouldNotUpdate() {
+        when(productRepository.findById(Mockito.any(Long.class)))
+                .thenAnswer(invocation -> {
+                    final var inputId = (Long) invocation.getArgument(0);
+                    return products.stream()
+                            .filter(product -> product.getId().equals(inputId))
+                            .findFirst();
+                });
+        when(productRepository.save(Mockito.any(Product.class)))
+                .thenAnswer(invocation -> {
+                    final var inputProduct = (Product) invocation.getArgument(0);
+                    if (products.stream().noneMatch(
+                            product -> product.getId().equals(inputProduct.getId()))
+                            && (inputProduct.getId() == null
+                            || inputProduct.getLabel() == null
+                            || inputProduct.getPrice() == null)) {
+                        throw new IllegalArgumentException();
+                    }
+                    products = new ArrayList<>(products.stream()
+                            .filter(product -> !product.getId().equals(inputProduct.getId()))
+                            .toList());
+                    products.add(inputProduct);
+                    return inputProduct;
+                });
+
         final var productDto = ProductDto.builder()
                 .id(-1L)
                 .build();
