@@ -145,21 +145,7 @@ public class ProductServiceImplTest {
     @Test
     public void save_ShouldNotSave() {
         when(productRepository.save(Mockito.any(Product.class)))
-                .thenAnswer(invocation -> {
-                    final var inputProduct = (Product) invocation.getArgument(0);
-                    if (products.stream().noneMatch(
-                            product -> product.getId().equals(inputProduct.getId()))
-                            && (inputProduct.getId() == null
-                            || inputProduct.getLabel() == null
-                            || inputProduct.getPrice() == null)) {
-                        throw new IllegalArgumentException();
-                    }
-                    products = new ArrayList<>(products.stream()
-                            .filter(product -> !product.getId().equals(inputProduct.getId()))
-                            .toList());
-                    products.add(inputProduct);
-                    return inputProduct;
-                });
+                .thenThrow(IllegalArgumentException.class);
 
         final var productDto = ProductDto.builder()
                 .id(null)
