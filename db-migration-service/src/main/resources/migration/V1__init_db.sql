@@ -20,19 +20,22 @@ CREATE TABLE IF NOT EXISTS stored_product
     quantity   INT CHECK ( quantity >= 0 )
 );
 
+CREATE TYPE ORDER_STATUS
+AS ENUM ('STATUS_CREATED', 'STATUS_DELIVERING', 'STATUS_DELIVERED');
+
+CREATE TABLE IF NOT EXISTS order
+(
+    id          BIGSERIAL PRIMARY KEY,
+    user_id     BIGINT       NOT NULL,
+    total_price INT          NOT NULL,
+    status      ORDER_STATUS NOT NULL,
+    date        TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS order_position
 (
     stored_product_id BIGINT REFERENCES stored_product (id),
     order_id          BIGINT REFERENCES order (id),
     quantity          INT CHECK ( quantity > 0),
     PRIMARY KEY (stored_product_id, order_id)
-);
-
-CREATE TABLE IF NOT EXISTS order
-(
-    id          BIGSERIAL PRIMARY KEY,
-    user_id     BIGINT      NOT NULL,
-    total_price INT         NOT NULL,
-    status      VARCHAR(32) NOT NULL,
-    date        TIMESTAMP   NOT NULL DEFAULT NOW()
 );
