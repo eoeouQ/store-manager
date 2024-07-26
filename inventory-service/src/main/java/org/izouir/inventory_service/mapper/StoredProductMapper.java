@@ -8,7 +8,6 @@ import org.izouir.inventory_service.entity.StoredProduct;
 public class StoredProductMapper {
     public StoredProductDto toDto(final StoredProduct storedProduct) {
         return StoredProductDto.builder()
-                .id(storedProduct.getId())
                 .product(ProductMapper.toDto(storedProduct.getProduct()))
                 .storeId(storedProduct.getStore().getId())
                 .quantity(storedProduct.getQuantity())
