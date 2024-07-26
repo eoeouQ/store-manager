@@ -5,6 +5,8 @@ import org.izouir.inventory_service.entity.Product;
 import org.izouir.inventory_service.entity.Store;
 import org.izouir.inventory_service.entity.StoreLocation;
 import org.izouir.inventory_service.entity.StoredProduct;
+import org.izouir.inventory_service.entity.StoredProductKey;
+import org.izouir.inventory_service.exception.StoredProductNotFoundException;
 import org.izouir.inventory_service.repository.StoredProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +37,7 @@ public class StoredProductServiceImplTest {
 
     @Test
     public void addAmount_ShouldAdd() {
-        when(storedProductRepository.findById(Mockito.any(Long.class)))
+        when(storedProductRepository.findById(Mockito.any(StoredProductKey.class)))
                 .thenReturn(Optional.of(StoredProduct.builder()
                         .product(Product.builder()
                                 .id(1L)
@@ -65,19 +67,34 @@ public class StoredProductServiceImplTest {
                         .build());
 
         final var updatedStoredProduct = storedProductService.addAmount(ChangeAmountRequestDto.builder()
-                .storedProductId(1L)
+                .productId(1L)
+                .storeId(1L)
                 .amount(10)
                 .build());
 
         assertNotNull(updatedStoredProduct);
         assertEquals(20, updatedStoredProduct.getQuantity());
-        verify(storedProductRepository, times(1)).findById(Mockito.any(Long.class));
+        verify(storedProductRepository, times(1)).findById(Mockito.any(StoredProductKey.class));
         verify(storedProductRepository, times(1)).save(Mockito.any(StoredProduct.class));
     }
 
     @Test
+    public void addAmount_ShouldNotAdd() {
+        when(storedProductRepository.findById(Mockito.any(StoredProductKey.class)))
+                .thenThrow(StoredProductNotFoundException.class);
+
+        assertThrows(StoredProductNotFoundException.class, () -> storedProductService.addAmount(ChangeAmountRequestDto.builder()
+                .productId(-1L)
+                .storeId(-1L)
+                .amount(10)
+                .build()));
+        verify(storedProductRepository, times(1)).findById(Mockito.any(StoredProductKey.class));
+        verify(storedProductRepository, times(0)).save(Mockito.any(StoredProduct.class));
+    }
+
+    @Test
     public void subtractAmount_ShouldSubtract() {
-        when(storedProductRepository.findById(Mockito.any(Long.class)))
+        when(storedProductRepository.findById(Mockito.any(StoredProductKey.class)))
                 .thenReturn(Optional.of(StoredProduct.builder()
                         .product(Product.builder()
                                 .id(1L)
@@ -107,19 +124,20 @@ public class StoredProductServiceImplTest {
                         .build());
 
         final var updatedStoredProduct = storedProductService.subtractAmount(ChangeAmountRequestDto.builder()
-                .storedProductId(1L)
+                .productId(1L)
+                .storeId(1L)
                 .amount(10)
                 .build());
 
         assertNotNull(updatedStoredProduct);
         assertEquals(10, updatedStoredProduct.getQuantity());
-        verify(storedProductRepository, times(1)).findById(Mockito.any(Long.class));
+        verify(storedProductRepository, times(1)).findById(Mockito.any(StoredProductKey.class));
         verify(storedProductRepository, times(1)).save(Mockito.any(StoredProduct.class));
     }
 
     @Test
     public void subtractAmount_ShouldNotSubtract() {
-        when(storedProductRepository.findById(Mockito.any(Long.class)))
+        when(storedProductRepository.findById(Mockito.any(StoredProductKey.class)))
                 .thenReturn(Optional.of(StoredProduct.builder()
                         .product(Product.builder()
                                 .id(1L)
@@ -137,10 +155,22 @@ public class StoredProductServiceImplTest {
                 .thenThrow(IllegalArgumentException.class);
 
         assertThrows(IllegalArgumentException.class, () -> storedProductService.subtractAmount(ChangeAmountRequestDto.builder()
-                .storedProductId(1L)
+                .productId(1L)
+                .storeId(1L)
                 .amount(10)
                 .build()));
-        verify(storedProductRepository, times(1)).findById(Mockito.any(Long.class));
+        verify(storedProductRepository, times(1)).findById(Mockito.any(StoredProductKey.class));
+        verify(storedProductRepository, times(0)).save(Mockito.any(StoredProduct.class));
+
+        when(storedProductRepository.findById(Mockito.any(StoredProductKey.class)))
+                .thenThrow(StoredProductNotFoundException.class);
+
+        assertThrows(StoredProductNotFoundException.class, () -> storedProductService.subtractAmount(ChangeAmountRequestDto.builder()
+                .productId(-1L)
+                .storeId(-1L)
+                .amount(10)
+                .build()));
+        verify(storedProductRepository, times(2)).findById(Mockito.any(StoredProductKey.class));
         verify(storedProductRepository, times(0)).save(Mockito.any(StoredProduct.class));
     }
 }
