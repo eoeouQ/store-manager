@@ -10,10 +10,15 @@ import lombok.Data;
 @Builder
 @Schema(description = "Request of changing stored product quantity")
 public class ChangeAmountRequestDto {
-    @NotNull(message = "Stored product ID can't be null")
-    @Positive(message = "Stored product ID must be equal or greater than 1")
-    @Schema(description = "Stored product ID", example = "1")
-    private Long storedProductId;
+    @NotNull(message = "Product ID can't be null")
+    @Positive(message = "Product ID must be equal or greater than 1")
+    @Schema(description = "Product ID", example = "1")
+    private Long productId;
+
+    @NotNull(message = "Store ID can't be null")
+    @Positive(message = "Store ID must be equal or greater than 1")
+    @Schema(description = "Store ID", example = "1")
+    private Long storeId;
 
     @NotNull(message = "Amount can't be null")
     @Positive(message = "Amount must be equal or greater than 0")
