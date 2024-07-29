@@ -1,0 +1,112 @@
+version: '3.15'
+
+name: store-manager
+services:
+  network-bridge:
+    container_name: ${APP_HOSTNAME}
+    image: alpine:latest
+    command: sleep infinity
+    ports:
+      - "8080:8080"
+      - "8765:8765"
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
+    restart: on-failure
+    command:
+      - start-dev
+    environment:
+      KEYCLOAK_ADMIN: ${KC_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASSWORD}
+    depends_on:
+      - network-bridge
+    network_mode: "service:network-bridge"
+
+  database:
+    container_name: database
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_HOSTNAME: ${POSTGRES_HOSTNAME}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+
+  discovery-service:
+    container_name: discovery-service
+    build: ../discovery-service
+    restart: on-failure
+    environment:
+      APP_HOSTNAME: ${APP_HOSTNAME}
+    depends_on:
+      - config-service
+    ports:
+      - "8761:8761"
+
+  config-service:
+    container_name: config-service
+    build: ../config-service
+    restart: on-failure
+
+  gateway-service:
+    container_name: gateway-service
+    build: ../gateway-service
+    restart: on-failure
+    environment:
+      APP_HOSTNAME: ${APP_HOSTNAME}
+    depends_on:
+      - keycloak
+      - product-service
+      - inventory-service
+      - order-service
+    network_mode: "service:network-bridge"
+
+  db-migration-service:
+    container_name: db-migration-service
+    build: ../db-migration-service
+    environment:
+      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_FLYWAY_USER: ${POSTGRES_USER}
+      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - database
+
+  product-service:
+    container_name: product-service
+    build: ../product-service
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - discovery-service
+      - db-migration-service
+
+  inventory-service:
+    container_name: inventory-service
+    build: ../inventory-service
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - discovery-service
+      - db-migration-service
+
+  order-service:
+    container_name: order-service
+    build: ../order-service
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      INVENTORY_URL: lb://inventory-service/api/v1/stored-products
+    depends_on:
+      - discovery-service
+      - db-migration-service
