@@ -24,7 +24,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
     @SequenceGenerator(name = "product_seq", sequenceName = "product_sequence", allocationSize = 1)
-    @Column(name = "id", columnDefinition = "BIGSERIAL PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT PRIMARY KEY")
     private Long id;
 
     @Column(name = "label", columnDefinition = "VARCHAR(64) UNIQUE NOT NULL")
