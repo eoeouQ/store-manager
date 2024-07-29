@@ -1,39 +1,35 @@
 package org.izouir.order_service.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.izouir.order_service.controller.api.OrderAPI;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
-@Tag(name = "Order service")
-public class OrderController {
+public class OrderController implements OrderAPI {
     private final OrderService orderService;
 
-    @Operation(summary = "Order placement")
-    @PostMapping
+    @Override
     public ResponseEntity<OrderDto> place(@RequestBody final PlaceOrderRequestDto request) {
         return new ResponseEntity<>(orderService.place(request), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Order status update")
-    @PutMapping("/{orderId}")
+    @Override
     public ResponseEntity<OrderDto> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
-        return new ResponseEntity<>(orderService.updateStatus(orderId, status), HttpStatus.OK);
+        return ResponseEntity.ok(orderService.updateStatus(orderId, status));
     }
 
-    @Operation(summary = "Order history")
-    @GetMapping("/history")
+    @Override
     public ResponseEntity<List<OrderDto>> getOrderHistory() {
-        return new ResponseEntity<>(orderService.getOrderHistory(), HttpStatus.OK);
+        return ResponseEntity.ok(orderService.getOrderHistory());
     }
 }
