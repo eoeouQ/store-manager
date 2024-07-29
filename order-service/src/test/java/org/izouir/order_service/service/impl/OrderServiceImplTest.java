@@ -15,6 +15,8 @@ import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderPositionRepository;
 import org.izouir.order_service.repository.OrderRepository;
+import org.izouir.order_service.repository.ProductRepository;
+import org.izouir.order_service.repository.StoreRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -52,10 +55,17 @@ public class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderPositionRepository orderPositionRepository;
-    private Order order;
-
+    private ProductRepository productRepository;
     @Mock
+    private StoreRepository storeRepository;
+    @Mock
+    private OrderPositionRepository orderPositionRepository;
+
+    private Order order;
+    private Product product;
+    private Store store;
+
+    @Spy
     private static WebClient inventoryWebClient;
     private static MockWebServer mockWebServer;
 
@@ -63,9 +73,7 @@ public class OrderServiceImplTest {
     public static void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        inventoryWebClient = WebClient.builder()
-                .baseUrl(mockWebServer.url("/").toString())
-                .build();
+        inventoryWebClient = WebClient.create(mockWebServer.url("/").toString());
     }
 
     @AfterAll
@@ -82,12 +90,12 @@ public class OrderServiceImplTest {
                 .status(OrderStatus.STATUS_CREATED)
                 .date(Timestamp.from(Instant.now()))
                 .build();
-        final var product = Product.builder()
+        product = Product.builder()
                 .id(1L)
                 .label("TEST")
                 .price(1)
                 .build();
-        final var store = Store.builder()
+        store = Store.builder()
                 .id(1L)
                 .name("TEST")
                 .location(StoreLocation.LOCATION_BELARUS)
@@ -114,6 +122,10 @@ public class OrderServiceImplTest {
                 .build();
         when(orderRepository.save(Mockito.any(Order.class)))
                 .thenReturn(order);
+        when(productRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.of(product));
+        when(storeRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.of(store));
         when(orderPositionRepository.save(Mockito.any(OrderPosition.class)))
                 .thenReturn(order.getPositions().get(0));
         mockWebServer.enqueue(
@@ -127,6 +139,7 @@ public class OrderServiceImplTest {
         assertNotNull(orderDto);
         verify(orderRepository, times(1)).save(Mockito.any(Order.class));
         verify(orderPositionRepository, times(1)).save(Mockito.any(OrderPosition.class));
+        verify(inventoryWebClient, times(1)).post();
     }
 
     @Test
