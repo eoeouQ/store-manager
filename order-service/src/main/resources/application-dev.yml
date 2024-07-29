@@ -1,4 +1,7 @@
 spring:
+  config:
+    web-client:
+      timeout: 3000
   datasource:
     driver-class-name: org.postgresql.Driver
     jpa:
