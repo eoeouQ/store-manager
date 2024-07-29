@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationConfig {
     @Value("${INVENTORY_URL}")
     private static String inventoryServiceUrl;
-
-    private static final int TIMEOUT = 3000;
+    @Value("${spring.config.web-client.timeout}")
+    private static Integer TIMEOUT;
 
     @Bean
     public WebClient inventoryWebClientWithTimeout() {
