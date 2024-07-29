@@ -14,13 +14,12 @@ CREATE TABLE IF NOT EXISTS product
     price INT                NOT NULL CHECK ( price > 0 )
 );
 
-CREATE SEQUENCE IF NOT EXISTS stored_product_sequence AS BIGINT;
 CREATE TABLE IF NOT EXISTS stored_product
 (
-    id         BIGINT PRIMARY KEY DEFAULT nextval('stored_product_sequence'),
     product_id BIGINT REFERENCES product (id),
     store_id   BIGINT REFERENCES store (id),
-    quantity   INT CHECK ( quantity >= 0 )
+    quantity   INT CHECK ( quantity >= 0 ),
+    PRIMARY KEY (product_id, store_id)
 );
 
 CREATE TYPE ORDER_STATUS
@@ -38,8 +37,8 @@ CREATE TABLE IF NOT EXISTS "order"
 
 CREATE TABLE IF NOT EXISTS order_position
 (
-    stored_product_id BIGINT REFERENCES stored_product (id),
-    order_id          BIGINT REFERENCES "order" (id),
-    quantity          INT CHECK ( quantity > 0),
-    PRIMARY KEY (stored_product_id, order_id)
+    order_id   BIGINT REFERENCES "order" (id),
+    product_id BIGINT REFERENCES product (id),
+    store_id   BIGINT REFERENCES store (id),
+    quantity   INT CHECK ( quantity > 0)
 );
