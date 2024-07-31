@@ -137,6 +137,16 @@ public class OrderServiceImplTest {
         final var orderDto = orderService.place(placeOrderRequestDto);
 
         assertNotNull(orderDto);
+
+        final var orderPositionDtoList = orderDto.getPositions();
+        assertEquals(1, orderPositionDtoList.size());
+
+        final var orderPositionDto = orderPositionDtoList.get(0);
+        final var orderPosition = order.getPositions().get(0);
+        assertEquals(orderPositionDto.getProductId(), orderPosition.getProduct().getId());
+        assertEquals(orderPositionDto.getStoreId(), orderPosition.getStore().getId());
+        assertEquals(orderPositionDto.getQuantity(), orderPosition.getQuantity());
+
         verify(orderRepository, times(1)).save(Mockito.any(Order.class));
         verify(orderPositionRepository, times(1)).save(Mockito.any(OrderPosition.class));
         verify(inventoryWebClient, times(1)).post();
