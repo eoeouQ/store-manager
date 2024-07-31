@@ -24,6 +24,12 @@ public class OrderController implements OrderAPI {
     }
 
     @Override
+    public ResponseEntity<Void> decline(final Long orderId) {
+        orderService.decline(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<OrderDto> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
         return ResponseEntity.ok(orderService.updateStatus(orderId, status));
     }
