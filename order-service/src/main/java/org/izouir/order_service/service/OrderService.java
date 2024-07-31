@@ -8,6 +8,8 @@ import java.util.List;
 public interface OrderService {
     OrderDto place(final PlaceOrderRequestDto request);
 
+    void decline(Long orderId);
+
     OrderDto updateStatus(final Long orderId, final String status);
 
     List<OrderDto> getOrderHistory();
