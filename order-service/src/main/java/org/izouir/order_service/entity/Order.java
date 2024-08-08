@@ -1,21 +1,12 @@
 package org.izouir.order_service.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name = "\"order\"")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
@@ -39,14 +30,15 @@ public class Order {
     @Column(name = "total_price", columnDefinition = "INT NOT NULL")
     private Integer totalPrice;
 
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "VARCHAR(32) NOT NULL")
+    @Column(name = "status", columnDefinition = " ORDER_STATUS NOT NULL")
     private OrderStatus status;
 
     @Column(name = "date", columnDefinition = "TIMESTAMP NOT NULL DEFAULT NOW()")
     private Timestamp date;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", columnDefinition = "BIGINT REFERENCES order (id)")
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id", columnDefinition = "BIGINT REFERENCES \"order\" (id)")
     private List<OrderPosition> positions;
 }

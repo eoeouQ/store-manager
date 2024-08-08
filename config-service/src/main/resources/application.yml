@@ -5,22 +5,10 @@ spring:
     config:
       server:
         native:
-          search-locations: resources/configs
-#        git:
-#          uri: ${CONFIG_URI}
-#          private-key: ${CONFIG_SSH_KEY}
-#          default-label: main
-#          search-paths: "{application}"
-#          ignore-local-ssh-settings: true
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-service:8761/eureka
-
-logging:
-  pattern:
-    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+          search-locations:
+            - classpath:/config/{application}
+  profiles:
+    active: native
 
 server:
   port: 8762

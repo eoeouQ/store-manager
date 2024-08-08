@@ -2,11 +2,7 @@ package org.izouir.order_service.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.izouir.order_service.dto.OrderPositionDto;
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderPosition;
-import org.izouir.order_service.entity.OrderPositionKey;
-import org.izouir.order_service.entity.Product;
-import org.izouir.order_service.entity.Store;
+import org.izouir.order_service.entity.*;
 
 import java.util.List;
 
@@ -14,8 +10,8 @@ import java.util.List;
 public class OrderPositionMapper {
     public OrderPositionDto toDto(final OrderPosition orderPosition) {
         return OrderPositionDto.builder()
-                .productId(orderPosition.getProduct().getId())
-                .storeId(orderPosition.getStore().getId())
+                .productId(orderPosition.getId().getProduct().getId())
+                .storeId(orderPosition.getId().getStore().getId())
                 .quantity(orderPosition.getQuantity())
                 .build();
     }
@@ -29,15 +25,12 @@ public class OrderPositionMapper {
     public static OrderPosition toEntity(final OrderPositionDto orderPositionDto,
                                          final Order order, final Product product, final Store store) {
         final var orderPositionKey = OrderPositionKey.builder()
-                .orderId(order.getId())
-                .productId(product.getId())
-                .storeId(store.getId())
-                .build();
-        return OrderPosition.builder()
-                .id(orderPositionKey)
                 .order(order)
                 .product(product)
                 .store(store)
+                .build();
+        return OrderPosition.builder()
+                .id(orderPositionKey)
                 .quantity(orderPositionDto.getQuantity())
                 .build();
     }

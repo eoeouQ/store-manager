@@ -1,12 +1,6 @@
 package org.izouir.order_service.mapper;
 
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderPosition;
-import org.izouir.order_service.entity.OrderPositionKey;
-import org.izouir.order_service.entity.OrderStatus;
-import org.izouir.order_service.entity.Product;
-import org.izouir.order_service.entity.Store;
-import org.izouir.order_service.entity.StoreLocation;
+import org.izouir.order_service.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -44,13 +38,10 @@ public class OrderPositionMapperTest {
                 .build();
         orderPosition = OrderPosition.builder()
                 .id(OrderPositionKey.builder()
-                        .orderId(1L)
-                        .productId(1L)
-                        .storeId(1L)
+                        .order(order)
+                        .product(product)
+                        .store(store)
                         .build())
-                .order(order)
-                .product(product)
-                .store(store)
                 .quantity(10)
                 .build();
         order.setPositions(List.of(orderPosition));
@@ -60,8 +51,8 @@ public class OrderPositionMapperTest {
     public void toDto_ShouldPass() {
         final var orderPositionDto = OrderPositionMapper.toDto(orderPosition);
 
-        assertEquals(orderPositionDto.getProductId(), orderPosition.getProduct().getId());
-        assertEquals(orderPositionDto.getStoreId(), orderPosition.getStore().getId());
+        assertEquals(orderPositionDto.getProductId(), orderPosition.getId().getProduct().getId());
+        assertEquals(orderPositionDto.getStoreId(), orderPosition.getId().getStore().getId());
         assertEquals(orderPositionDto.getQuantity(), orderPosition.getQuantity());
     }
 
@@ -77,11 +68,11 @@ public class OrderPositionMapperTest {
         final var mappedOrderPosition = OrderPositionMapper.toEntity(orderPositionDto, order, product, store);
 
         final var mappedOrderPositionKey = mappedOrderPosition.getId();
-        assertEquals(mappedOrderPositionKey.getOrderId(), order.getId());
-        assertEquals(mappedOrderPositionKey.getProductId(), product.getId());
-        assertEquals(mappedOrderPositionKey.getStoreId(), store.getId());
+        assertEquals(mappedOrderPositionKey.getOrder().getId(), order.getId());
+        assertEquals(mappedOrderPositionKey.getProduct().getId(), product.getId());
+        assertEquals(mappedOrderPositionKey.getStore().getId(), store.getId());
 
-        final var mappedOrderPositionOrder = mappedOrderPosition.getOrder();
+        final var mappedOrderPositionOrder = mappedOrderPosition.getId().getOrder();
         assertEquals(mappedOrderPositionOrder.getId(), order.getId());
         assertEquals(mappedOrderPositionOrder.getUserId(), order.getUserId());
         assertEquals(mappedOrderPositionOrder.getTotalPrice(), order.getTotalPrice());
@@ -89,12 +80,12 @@ public class OrderPositionMapperTest {
         assertEquals(mappedOrderPositionOrder.getDate(), order.getDate());
         assertEquals(mappedOrderPositionOrder.getPositions(), order.getPositions());
 
-        final var mappedOrderPositionProduct = mappedOrderPosition.getProduct();
+        final var mappedOrderPositionProduct = mappedOrderPosition.getId().getProduct();
         assertEquals(mappedOrderPositionProduct.getId(), product.getId());
         assertEquals(mappedOrderPositionProduct.getLabel(), product.getLabel());
         assertEquals(mappedOrderPositionProduct.getPrice(), product.getPrice());
 
-        final var mappedOrderPositionStore = mappedOrderPosition.getStore();
+        final var mappedOrderPositionStore = mappedOrderPosition.getId().getStore();
         assertEquals(mappedOrderPositionStore.getId(), store.getId());
         assertEquals(mappedOrderPositionStore.getName(), store.getName());
         assertEquals(mappedOrderPositionStore.getLocation(), store.getLocation());

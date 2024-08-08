@@ -8,6 +8,7 @@ services:
     command: sleep infinity
     ports:
       - "8080:8080"
+      - "8761:8761"
       - "8765:8765"
 
   keycloak:
@@ -23,8 +24,14 @@ services:
       - network-bridge
     network_mode: "service:network-bridge"
 
+  kafka:
+    container_name: kafka
+    image: apache/kafka:3.8.0
+    restart: on-failure
+    network_mode: "service:network-bridge"
+
   database:
-    container_name: database
+    container_name: ${POSTGRES_HOSTNAME}
     image: postgres:latest
     restart: always
     environment:
@@ -33,7 +40,27 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - "5432:5432"
+
+  config-service:
+    container_name: config-service
+    build: ../config-service
+    restart: on-failure
+    network_mode: "service:network-bridge"
+
+  db-migration-service:
+    container_name: db-migration-service
+    build: ../db-migration-service
+    restart: on-failure
+    environment:
+      APP_HOSTNAME: ${APP_HOSTNAME}
+      DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}
+      DATASOURCE_USERNAME: ${POSTGRES_USER}
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - config-service
+      - database
+    network_mode: "service:network-bridge"
 
   discovery-service:
     container_name: discovery-service
@@ -43,13 +70,7 @@ services:
       APP_HOSTNAME: ${APP_HOSTNAME}
     depends_on:
       - config-service
-    ports:
-      - "8761:8761"
-
-  config-service:
-    container_name: config-service
-    build: ../config-service
-    restart: on-failure
+    network_mode: "service:network-bridge"
 
   gateway-service:
     container_name: gateway-service
@@ -58,55 +79,56 @@ services:
     environment:
       APP_HOSTNAME: ${APP_HOSTNAME}
     depends_on:
+      - config-service
       - keycloak
       - product-service
       - inventory-service
       - order-service
     network_mode: "service:network-bridge"
 
-  db-migration-service:
-    container_name: db-migration-service
-    build: ../db-migration-service
-    environment:
-      SPRING_FLYWAY_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_FLYWAY_USER: ${POSTGRES_USER}
-      SPRING_FLYWAY_PASSWORD: ${POSTGRES_PASSWORD}
-    depends_on:
-      - database
-
   product-service:
     container_name: product-service
     build: ../product-service
     restart: on-failure
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_HOSTNAME: ${APP_HOSTNAME}
+      DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}
+      DATASOURCE_USERNAME: ${POSTGRES_USER}
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
+      - config-service
       - discovery-service
       - db-migration-service
+    network_mode: "service:network-bridge"
 
   inventory-service:
     container_name: inventory-service
     build: ../inventory-service
     restart: on-failure
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_HOSTNAME: ${APP_HOSTNAME}
+      DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}
+      DATASOURCE_USERNAME: ${POSTGRES_USER}
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
+      - config-service
       - discovery-service
       - db-migration-service
+      - kafka
+    network_mode: "service:network-bridge"
 
   order-service:
     container_name: order-service
     build: ../order-service
     restart: on-failure
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      INVENTORY_URL: lb://inventory-service/api/v1/stored-products
+      APP_HOSTNAME: ${APP_HOSTNAME}
+      DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:5432/${POSTGRES_DB}
+      DATASOURCE_USERNAME: ${POSTGRES_USER}
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
+      - config-service
       - discovery-service
       - db-migration-service
+      - kafka
+    network_mode: "service:network-bridge"
