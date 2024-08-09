@@ -38,7 +38,7 @@ public class Order {
     @Column(name = "date", columnDefinition = "TIMESTAMP NOT NULL DEFAULT NOW()")
     private Timestamp date;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", columnDefinition = "BIGINT REFERENCES \"order\" (id)")
     private List<OrderPosition> positions;
 }

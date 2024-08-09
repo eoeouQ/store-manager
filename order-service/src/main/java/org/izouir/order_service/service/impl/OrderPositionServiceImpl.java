@@ -13,6 +13,7 @@ import org.izouir.order_service.repository.OrderPositionRepository;
 import org.izouir.order_service.repository.ProductRepository;
 import org.izouir.order_service.repository.StoreRepository;
 import org.izouir.order_service.service.OrderPositionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,12 @@ public class OrderPositionServiceImpl implements OrderPositionService {
     private static final String PRODUCT_NOT_FOUND_MESSAGE = "Product with id = %s not found";
     private static final String STORE_NOT_FOUND_MESSAGE = "Store with id = %s not found";
 
+    @Value("${spring.kafka.producer.properties.topic-add}")
+    private String topicAdd;
+
+    @Value("${spring.kafka.producer.properties.topic-subtract}")
+    private String topicSubtract;
+
     @Override
     @Transactional
     public void place(final Order order, final List<OrderPositionDto> orderPositionDtoList) {
@@ -36,11 +43,12 @@ public class OrderPositionServiceImpl implements OrderPositionService {
             final var productId = orderPositionDto.getProductId();
             final var storeId = orderPositionDto.getStoreId();
 
-            kafkaTemplate.send("subtract", ChangeAmountRequestDto.builder()
-                    .productId(productId)
-                    .storeId(storeId)
-                    .amount(orderPositionDto.getQuantity())
-                    .build());
+            kafkaTemplate.send(topicSubtract,
+                    ChangeAmountRequestDto.builder()
+                            .productId(productId)
+                            .storeId(storeId)
+                            .amount(orderPositionDto.getQuantity())
+                            .build());
 
             final var product = productRepository.findById(productId)
                     .orElseThrow(() -> new ProductNotFoundException(String.format(PRODUCT_NOT_FOUND_MESSAGE, productId)));
@@ -55,11 +63,12 @@ public class OrderPositionServiceImpl implements OrderPositionService {
     @Transactional
     public void decline(final List<OrderPosition> orderPositions) {
         for (final var orderPosition : orderPositions) {
-            kafkaTemplate.send("add", ChangeAmountRequestDto.builder()
-                    .productId(orderPosition.getId().getProduct().getId())
-                    .storeId(orderPosition.getId().getStore().getId())
-                    .amount(orderPosition.getQuantity())
-                    .build());
+            kafkaTemplate.send(topicAdd,
+                    ChangeAmountRequestDto.builder()
+                            .productId(orderPosition.getId().getProduct().getId())
+                            .storeId(orderPosition.getId().getStore().getId())
+                            .amount(orderPosition.getQuantity())
+                            .build());
         }
     }
 }
