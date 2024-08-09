@@ -2,6 +2,7 @@ package org.izouir.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
+import org.izouir.inventory_service.entity.InventoryOperation;
 import org.izouir.inventory_service.entity.StoredProduct;
 import org.izouir.inventory_service.entity.StoredProductKey;
 import org.izouir.inventory_service.exception.ProductNotFoundException;
@@ -27,30 +28,34 @@ public class StoredProductServiceImpl implements StoredProductService {
     private static final String PRODUCT_NOT_FOUND_MESSAGE = "Product with id = %s not found";
     private static final String STORE_NOT_FOUND_MESSAGE = "Store with id = %s not found";
 
-    @KafkaListener(topics = "add", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "requestListener")
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic-add}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "requestListener")
     void listenToAdd(final ChangeAmountRequestDto request) {
-        addAmount(request);
+        changeAmount(request, InventoryOperation.OPERATION_ADD);
     }
 
-    @KafkaListener(topics = "subtract", groupId = "${spring.kafka.consumer.group-id}", containerFactory = "requestListener")
+    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic-subtract}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "requestListener")
     void listenToSubtract(final ChangeAmountRequestDto request) {
-        subtractAmount(request);
+        changeAmount(request, InventoryOperation.OPERATION_SUBTRACT);
     }
 
     @Override
-    public void addAmount(final ChangeAmountRequestDto request) {
+    public void changeAmount(final ChangeAmountRequestDto request, final InventoryOperation operation) {
         final var storedProduct = constructFrom(request);
-        storedProduct.setQuantity(storedProduct.getQuantity() + request.getAmount());
-        storedProductRepository.save(storedProduct);
-    }
 
-    @Override
-    public void subtractAmount(final ChangeAmountRequestDto request) {
-        final var storedProduct = constructFrom(request);
-        if (storedProduct.getQuantity() - request.getAmount() < 0) {
-            throw new IllegalArgumentException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
+        switch (operation) {
+            case OPERATION_ADD -> storedProduct.setQuantity(storedProduct.getQuantity() + request.getAmount());
+            case OPERATION_SUBTRACT -> {
+                if (storedProduct.getQuantity() - request.getAmount() < 0) {
+                    throw new IllegalArgumentException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
+                }
+                storedProduct.setQuantity(storedProduct.getQuantity() - request.getAmount());
+            }
         }
-        storedProduct.setQuantity(storedProduct.getQuantity() - request.getAmount());
+
         storedProductRepository.save(storedProduct);
     }
 
