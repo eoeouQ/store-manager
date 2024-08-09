@@ -14,3 +14,6 @@ spring:
     consumer:
       group-id: "inventory"
       auto-offset-reset: earliest
+      properties:
+        topic-add: "inventory-add"
+        topic-subtract: "inventory-subtract"
