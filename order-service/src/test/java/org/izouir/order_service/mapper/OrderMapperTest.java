@@ -1,12 +1,6 @@
 package org.izouir.order_service.mapper;
 
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderPosition;
-import org.izouir.order_service.entity.OrderPositionKey;
-import org.izouir.order_service.entity.OrderStatus;
-import org.izouir.order_service.entity.Product;
-import org.izouir.order_service.entity.Store;
-import org.izouir.order_service.entity.StoreLocation;
+import org.izouir.order_service.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -42,13 +36,10 @@ public class OrderMapperTest {
                 .build();
         final var orderPosition = OrderPosition.builder()
                 .id(OrderPositionKey.builder()
-                        .orderId(1L)
-                        .productId(1L)
-                        .storeId(1L)
+                        .order(order)
+                        .product(product)
+                        .store(store)
                         .build())
-                .order(order)
-                .product(product)
-                .store(store)
                 .quantity(10)
                 .build();
         order.setPositions(List.of(orderPosition));

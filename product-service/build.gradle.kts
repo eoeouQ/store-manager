@@ -30,7 +30,7 @@ dependencies {
     implementation("org.springframework:spring-orm:6.1.9")
 
     // Open API
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")

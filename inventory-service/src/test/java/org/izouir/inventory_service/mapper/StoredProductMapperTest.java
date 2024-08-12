@@ -1,9 +1,6 @@
 package org.izouir.inventory_service.mapper;
 
-import org.izouir.inventory_service.entity.Product;
-import org.izouir.inventory_service.entity.Store;
-import org.izouir.inventory_service.entity.StoreLocation;
-import org.izouir.inventory_service.entity.StoredProduct;
+import org.izouir.inventory_service.entity.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,9 +18,12 @@ public class StoredProductMapperTest {
                 .name("TEST_STORE")
                 .location(StoreLocation.LOCATION_BELARUS)
                 .build();
-        final var storedProduct = StoredProduct.builder()
+        final var storedProductKey = StoredProductKey.builder()
                 .product(product)
                 .store(store)
+                .build();
+        final var storedProduct = StoredProduct.builder()
+                .id(storedProductKey)
                 .quantity(10)
                 .build();
         final var storedProductDto = StoredProductMapper.toDto(storedProduct);

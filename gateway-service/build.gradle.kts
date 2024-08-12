@@ -14,9 +14,10 @@ repositories {
 extra["springCloudVersion"] = "2023.0.2"
 
 dependencies {
+    // Spring
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-    implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.4")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.4")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.1.2")
 }
 

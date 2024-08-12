@@ -1,12 +1,10 @@
 package org.izouir.inventory_service.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.*;
 
 @Data
 @Builder
@@ -15,9 +13,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @Embeddable
 public class StoredProductKey {
-    @Column(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
-    Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
+    private Product product;
 
-    @Column(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
-    Long storeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
+    private Store store;
 }

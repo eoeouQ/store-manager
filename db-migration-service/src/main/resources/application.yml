@@ -1,3 +1,8 @@
 spring:
   application:
     name: db-migration-service
+  config:
+    import: configserver:http://${APP_HOSTNAME}:8762
+  cloud:
+    config:
+      fail-fast: true

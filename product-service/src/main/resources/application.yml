@@ -2,7 +2,19 @@ spring:
   application:
     name: product-service
   config:
-    import: optional:configserver:http://config-service:8762
+    import: configserver:http://${APP_HOSTNAME}:8762
   cloud:
     config:
       fail-fast: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_HOSTNAME}:8761/eureka
+
+logging:
+  pattern:
+    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+
+server:
+  port: 8081

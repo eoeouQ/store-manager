@@ -1,12 +1,10 @@
 package org.izouir.order_service.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.*;
 
 @Data
 @Builder
@@ -15,12 +13,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @Embeddable
 public class OrderPositionKey {
-    @Column(name = "order_id", columnDefinition = "BIGINT REFERENCES order (id)")
-    Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", columnDefinition = "BIGINT REFERENCES \"order\" (id)")
+    private Order order;
 
-    @Column(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
-    Long productId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
+    private Product product;
 
-    @Column(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
-    Long storeId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
+    private Store store;
 }

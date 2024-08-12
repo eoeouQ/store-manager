@@ -1,13 +1,7 @@
 package org.izouir.order_service.service.impl;
 
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderPosition;
-import org.izouir.order_service.entity.OrderPositionKey;
-import org.izouir.order_service.entity.OrderStatus;
-import org.izouir.order_service.entity.Product;
-import org.izouir.order_service.entity.Store;
-import org.izouir.order_service.entity.StoreLocation;
+import org.izouir.order_service.entity.*;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderRepository;
@@ -27,12 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -68,13 +58,10 @@ public class OrderServiceImplTest {
                 .build();
         final var orderPosition = OrderPosition.builder()
                 .id(OrderPositionKey.builder()
-                        .orderId(1L)
-                        .productId(1L)
-                        .storeId(1L)
+                        .order(order)
+                        .product(product)
+                        .store(store)
                         .build())
-                .order(order)
-                .product(product)
-                .store(store)
                 .quantity(10)
                 .build();
         order.setPositions(List.of(orderPosition));
@@ -98,8 +85,8 @@ public class OrderServiceImplTest {
 
         final var orderPositionDto = orderPositionDtoList.get(0);
         final var orderPosition = order.getPositions().get(0);
-        assertEquals(orderPositionDto.getProductId(), orderPosition.getProduct().getId());
-        assertEquals(orderPositionDto.getStoreId(), orderPosition.getStore().getId());
+        assertEquals(orderPositionDto.getProductId(), orderPosition.getId().getProduct().getId());
+        assertEquals(orderPositionDto.getStoreId(), orderPosition.getId().getStore().getId());
         assertEquals(orderPositionDto.getQuantity(), orderPosition.getQuantity());
 
         verify(orderRepository, times(1)).save(Mockito.any(Order.class));

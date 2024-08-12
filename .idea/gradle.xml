@@ -12,6 +12,11 @@
                   <project path="$PROJECT_DIR$/config-service" />
                 </projects>
               </build>
+              <build path="$PROJECT_DIR$/db-migration-service" name="db-migration-service">
+                <projects>
+                  <project path="$PROJECT_DIR$/db-migration-service" />
+                </projects>
+              </build>
               <build path="$PROJECT_DIR$/discovery-service" name="discovery-service">
                 <projects>
                   <project path="$PROJECT_DIR$/discovery-service" />
@@ -46,6 +51,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/config-service" />
+            <option value="$PROJECT_DIR$/db-migration-service" />
             <option value="$PROJECT_DIR$/discovery-service" />
             <option value="$PROJECT_DIR$/gateway-service" />
             <option value="$PROJECT_DIR$/inventory-service" />

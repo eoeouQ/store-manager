@@ -13,33 +13,20 @@ spring:
           enabled: true
       routes:
         - id: product-service
-          uri: http://product-service:8081
+          uri: http://${APP_HOSTNAME}:8081
           predicates:
-            - Path=/products/**
+            - Path=/product/**
           filters:
-            - RewritePath=/products/?(?<segment>.*), /$\{segment}
+            - RewritePath=/product/?(?<segment>.*), /$\{segment}
         - id: inventory-service
-          uri: http://inventory-service:8082
+          uri: http://${APP_HOSTNAME}:8082
           predicates:
             - Path=/inventory/**
           filters:
             - RewritePath=/inventory/?(?<segment>.*), /$\{segment}
         - id: order-service
-          uri: http://order-service:8083
+          uri: http://${APP_HOSTNAME}:8083
           predicates:
-            - Path=/orders/**
+            - Path=/order/**
           filters:
-            - RewritePath=/orders/?(?<segment>.*), /$\{segment}
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discovery-service:8761/eureka
-
-logging:
-  pattern:
-    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
-
-server:
-  port: 8765
-  forward-headers-strategy: framework
+            - RewritePath=/order/?(?<segment>.*), /$\{segment}

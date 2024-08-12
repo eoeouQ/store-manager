@@ -19,8 +19,9 @@ public class OrderController implements OrderAPI {
     private final OrderService orderService;
 
     @Override
-    public ResponseEntity<OrderDto> place(@RequestBody final PlaceOrderRequestDto request) {
-        return new ResponseEntity<>(orderService.place(request), HttpStatus.CREATED);
+    public ResponseEntity<Void> place(@RequestBody final PlaceOrderRequestDto request) {
+        orderService.place(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
@@ -30,8 +31,9 @@ public class OrderController implements OrderAPI {
     }
 
     @Override
-    public ResponseEntity<OrderDto> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
-        return ResponseEntity.ok(orderService.updateStatus(orderId, status));
+    public ResponseEntity<Void> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
+        orderService.updateStatus(orderId, status);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

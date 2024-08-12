@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto place(final PlaceOrderRequestDto request) {
+    public void place(final PlaceOrderRequestDto request) {
         final var totalPrice = calculateOrderTotalPrice(request.getPositions());
         if (totalPrice <= 0) {
             throw new IllegalArgumentException(ZERO_TOTAL_PRICE_MESSAGE);
@@ -41,10 +41,7 @@ public class OrderServiceImpl implements OrderService {
                 .date(Timestamp.from(Instant.now()))
                 .build();
         order = orderRepository.save(order);
-
         orderPositionService.place(order, request.getPositions());
-
-        return OrderMapper.toDto(order);
     }
 
     @Override
@@ -52,18 +49,19 @@ public class OrderServiceImpl implements OrderService {
     public void decline(final Long orderId) {
         final var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(String.format(ORDER_NOT_FOUND_MESSAGE, orderId)));
-        orderPositionService.decline(order.getPositions());
-        updateStatus(orderId, OrderStatus.STATUS_DECLINED.toString());
+        if (!order.getStatus().equals(OrderStatus.STATUS_DECLINED)) {
+            orderPositionService.decline(order.getPositions());
+            updateStatus(orderId, OrderStatus.STATUS_DECLINED.toString());
+        }
     }
 
     @Override
     @Transactional
-    public OrderDto updateStatus(final Long orderId, final String status) {
-        var order = orderRepository.findById(orderId)
+    public void updateStatus(final Long orderId, final String status) {
+        final var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(String.format(ORDER_NOT_FOUND_MESSAGE, orderId)));
         order.setStatus(OrderStatus.valueOf(status));
-        order = orderRepository.save(order);
-        return OrderMapper.toDto(order);
+        orderRepository.save(order);
     }
 
     @Override

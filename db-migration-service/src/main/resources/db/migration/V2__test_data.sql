@@ -21,6 +21,13 @@ VALUES (1, 3, 17);
 INSERT INTO stored_product (product_id, store_id, quantity)
 VALUES (3, 2, 121);
 
+INSERT INTO "order" (user_id, total_price, status, date)
+VALUES (1, 120, 'STATUS_CREATED', NOW());
+INSERT INTO "order" (user_id, total_price, status, date)
+VALUES (2, 270, 'STATUS_DELIVERED', NOW());
+INSERT INTO "order" (user_id, total_price, status, date)
+VALUES (3, 1090, 'STATUS_CREATED', NOW());
+
 INSERT INTO order_position (order_id, product_id, store_id, quantity)
 VALUES (1, 1, 1, 10);
 INSERT INTO order_position (order_id, product_id, store_id, quantity)
@@ -35,10 +42,3 @@ INSERT INTO order_position (order_id, product_id, store_id, quantity)
 VALUES (3, 2, 1, 25);
 INSERT INTO order_position (order_id, product_id, store_id, quantity)
 VALUES (3, 3, 2, 50);
-
-INSERT INTO "order" (user_id, total_price, status, date)
-VALUES (1, 120, 'STATUS_CREATED', NOW());
-INSERT INTO "order" (user_id, total_price, status, date)
-VALUES (2, 270, 'STATUS_DELIVERED', NOW());
-INSERT INTO "order" (user_id, total_price, status, date)
-VALUES (3, 1090, 'STATUS_CREATED', NOW());
