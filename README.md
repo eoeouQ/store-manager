@@ -12,8 +12,11 @@ ___
 
 # Microservices
 
-___
+---
+
 ## Discovery Service
+
+---
 
 ***Service that combines other services in one environment***
 
@@ -22,8 +25,9 @@ ___
 * ***Spring Cloud Eureka Server***
 * ***Spring Cloud Config Client***
 
----
 ## Config Service
+
+---
 
 ***Service that stores the configuration of other services***
 
@@ -31,8 +35,9 @@ ___
 
 * ***Spring Cloud Config Server***
 
----
 ## DB Migration Service
+
+---
 
 ***Service that performs database migration***
 
@@ -41,8 +46,9 @@ ___
 * ***Spring Data JPA***
 * ***PostgreSQL + Flyway***
 
----
 ## Gateway Service
+
+---
 
 ***Service that provides a single access point to the application and its services, using OAuth 2 for traffic protection***
 * ***<ins>/product</ins> -> Product Service***
@@ -56,8 +62,9 @@ ___
 * ***Spring Cloud Eureka Client***
 * ***Spring Cloud Config Client***
 
----
 ## Product Service
+
+---
 
 ***Service that provides a CRUD API for products***
 
@@ -72,8 +79,9 @@ ___
 * ***Lombok***
 * ***Open API***
 
----
 ## Inventory Service
+
+---
 
 ***Service that provides API for amount change of products in stores***
 
@@ -89,8 +97,10 @@ ___
 * ***Kafka***
 * ***Open API***
 
----
+
 ## Order Service
+
+---
 
 ***Service that provides API for order placement, decline, its status change and order history view***
 
@@ -106,8 +116,6 @@ ___
 * ***Kafka***
 * ***Open API***
 
----
-
 ## Installation
 
 ___
@@ -121,6 +129,16 @@ docker-compose up --build
 ```
 
 ***Then go to <ins>{app-hostname}:8080</ins> and create store-manager-realm with gateway-client inside it, copy its credentials for further use in authentication***
+
+## Local Startup
+
+---
+
+***To run a separate microservice locally, it is necessary that its dependency services are already running. These services, as well as the necessary environment variables, are described in docker/docker-compose.yml***
+
+## Documentation
+
+---
 
 ***Documentation on how to use API
 available by <ins>{app-hostname}:8765/{service-name}/v3/api-docs</ins> mappings***
