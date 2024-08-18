@@ -1,5 +1,6 @@
 package org.izouir.order_service.controller.advice;
 
+import jakarta.validation.ValidationException;
 import org.izouir.order_service.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,16 @@ import java.time.Instant;
 
 @RestControllerAdvice
 public class ControllerExceptionHandlingAdvice {
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleValidationException(final ValidationException exception) {
+        return ErrorDto.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(exception.getMessage())
+                .timestamp(Timestamp.from(Instant.now()))
+                .build();
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto handleRuntimeException(final RuntimeException exception) {
