@@ -12,7 +12,6 @@ import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
 import org.izouir.inventory_service.repository.StoredProductRepository;
 import org.izouir.inventory_service.service.StoredProductService;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,20 +26,6 @@ public class StoredProductServiceImpl implements StoredProductService {
 
     private static final String PRODUCT_NOT_FOUND_MESSAGE = "Product with id = %s not found";
     private static final String STORE_NOT_FOUND_MESSAGE = "Store with id = %s not found";
-
-    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic-add}",
-            groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "requestListener")
-    void listenToAdd(final ChangeAmountRequestDto request) {
-        changeAmount(request, InventoryOperation.OPERATION_ADD);
-    }
-
-    @KafkaListener(topics = "${spring.kafka.consumer.properties.topic-subtract}",
-            groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "requestListener")
-    void listenToSubtract(final ChangeAmountRequestDto request) {
-        changeAmount(request, InventoryOperation.OPERATION_SUBTRACT);
-    }
 
     @Override
     public void changeAmount(final ChangeAmountRequestDto request, final InventoryOperation operation) {
