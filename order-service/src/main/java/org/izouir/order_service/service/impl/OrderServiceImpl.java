@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,6 +70,27 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrderHistory() {
         final var orderHistory = orderRepository.findAllByOrderByDateAsc();
         return OrderMapper.toDtoList(orderHistory);
+    }
+
+    @Override
+    public List<OrderDto> getOrdersFiltered(final String userId,
+                                            final String totalPrice,
+                                            final String status,
+                                            final String date) {
+        final var orders = new ArrayList<Order>();
+        if (!userId.isBlank()) {
+            orders.addAll(orderRepository.findAllByUserId(Long.parseLong(userId)));
+        }
+        if (!totalPrice.isBlank()) {
+            orders.addAll(orderRepository.findAllByTotalPrice(Integer.parseInt(totalPrice)));
+        }
+        if (!status.isBlank()) {
+            orders.addAll(orderRepository.findAllByStatus(OrderStatus.valueOf(status)));
+        }
+        if (!date.isBlank()) {
+            orders.addAll(orderRepository.findAllByDate(Timestamp.valueOf(date)));
+        }
+        return OrderMapper.toDtoList(orders);
     }
 
     private Integer calculateOrderTotalPrice(final List<OrderPositionDto> positions) {

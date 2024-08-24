@@ -22,9 +22,16 @@ public interface OrderAPI {
 
     @Operation(summary = "Order status update")
     @PutMapping("/{orderId}")
-    ResponseEntity<Void> updateStatus(@PathVariable final Long orderId, @RequestBody final String status);
+    ResponseEntity<Void> updateStatus(@PathVariable("orderId") final Long orderId, @RequestBody final String status);
 
     @Operation(summary = "Order history")
     @GetMapping("/history")
     ResponseEntity<List<OrderDto>> getOrderHistory();
+
+    @Operation(summary = "")
+    @GetMapping
+    ResponseEntity<List<OrderDto>> getOrdersFiltered(@RequestParam(value = "userId", required = false, defaultValue = "") final String userId,
+                                                     @RequestParam(value = "totalPrice", required = false, defaultValue = "") final String totalPrice,
+                                                     @RequestParam(value = "status", required = false, defaultValue = "") final String status,
+                                                     @RequestParam(value = "date", required = false, defaultValue = "") final String date);
 }

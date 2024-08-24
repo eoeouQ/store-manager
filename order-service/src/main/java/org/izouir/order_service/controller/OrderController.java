@@ -7,8 +7,6 @@ import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public class OrderController implements OrderAPI {
     private final OrderService orderService;
 
     @Override
-    public ResponseEntity<Void> place(@RequestBody final PlaceOrderRequestDto request) {
+    public ResponseEntity<Void> place(final PlaceOrderRequestDto request) {
         orderService.place(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -31,7 +29,7 @@ public class OrderController implements OrderAPI {
     }
 
     @Override
-    public ResponseEntity<Void> updateStatus(@PathVariable final Long orderId, @RequestBody final String status) {
+    public ResponseEntity<Void> updateStatus(final Long orderId, final String status) {
         orderService.updateStatus(orderId, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -39,5 +37,13 @@ public class OrderController implements OrderAPI {
     @Override
     public ResponseEntity<List<OrderDto>> getOrderHistory() {
         return ResponseEntity.ok(orderService.getOrderHistory());
+    }
+
+    @Override
+    public ResponseEntity<List<OrderDto>> getOrdersFiltered(final String userId,
+                                                            final String totalPrice,
+                                                            final String status,
+                                                            final String date) {
+        return ResponseEntity.ok(orderService.getOrdersFiltered(userId, totalPrice, status, date));
     }
 }

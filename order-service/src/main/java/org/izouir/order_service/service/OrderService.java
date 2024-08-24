@@ -13,4 +13,9 @@ public interface OrderService {
     void updateStatus(final Long orderId, final String status);
 
     List<OrderDto> getOrderHistory();
+
+    List<OrderDto> getOrdersFiltered(final String userId,
+                                     final String totalPrice,
+                                     final String status,
+                                     final String date);
 }
