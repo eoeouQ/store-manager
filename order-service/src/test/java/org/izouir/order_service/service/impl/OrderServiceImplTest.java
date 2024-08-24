@@ -8,6 +8,7 @@ import org.izouir.order_service.entity.OrderStatus;
 import org.izouir.order_service.entity.Product;
 import org.izouir.order_service.entity.Store;
 import org.izouir.order_service.entity.StoreLocation;
+import org.izouir.order_service.exception.InvalidRequestException;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderRepository;
@@ -99,7 +100,7 @@ public class OrderServiceImplTest {
                 .positions(new ArrayList<>())
                 .build();
 
-        assertThrows(IllegalArgumentException.class, () -> orderService.place(placeOrderRequestDto));
+        assertThrows(InvalidRequestException.class, () -> orderService.place(placeOrderRequestDto));
         verify(orderRepository, times(0)).save(Mockito.any(Order.class));
     }
 

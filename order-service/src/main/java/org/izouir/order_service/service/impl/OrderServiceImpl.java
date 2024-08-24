@@ -7,6 +7,7 @@ import org.izouir.order_service.dto.OrderPositionDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.entity.Order;
 import org.izouir.order_service.entity.OrderStatus;
+import org.izouir.order_service.exception.InvalidRequestException;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderMapper;
 import org.izouir.order_service.repository.OrderRepository;
@@ -32,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     public void place(final PlaceOrderRequestDto request) {
         final var totalPrice = calculateOrderTotalPrice(request.getPositions());
         if (totalPrice <= 0) {
-            throw new IllegalArgumentException(ZERO_TOTAL_PRICE_MESSAGE);
+            throw new InvalidRequestException(ZERO_TOTAL_PRICE_MESSAGE);
         }
         var order = Order.builder()
                 .userId(request.getUserId())

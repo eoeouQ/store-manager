@@ -5,6 +5,7 @@ import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
 import org.izouir.inventory_service.entity.InventoryOperation;
 import org.izouir.inventory_service.entity.StoredProduct;
 import org.izouir.inventory_service.entity.StoredProductKey;
+import org.izouir.inventory_service.exception.InvalidRequestException;
 import org.izouir.inventory_service.exception.ProductNotFoundException;
 import org.izouir.inventory_service.exception.StoreNotFoundException;
 import org.izouir.inventory_service.exception.StoredProductNotFoundException;
@@ -35,7 +36,7 @@ public class StoredProductServiceImpl implements StoredProductService {
             case OPERATION_ADD -> storedProduct.setQuantity(storedProduct.getQuantity() + request.getAmount());
             case OPERATION_SUBTRACT -> {
                 if (storedProduct.getQuantity() - request.getAmount() < 0) {
-                    throw new IllegalArgumentException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
+                    throw new InvalidRequestException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
                 }
                 storedProduct.setQuantity(storedProduct.getQuantity() - request.getAmount());
             }

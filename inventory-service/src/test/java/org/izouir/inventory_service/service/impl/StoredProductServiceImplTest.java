@@ -7,6 +7,7 @@ import org.izouir.inventory_service.entity.Store;
 import org.izouir.inventory_service.entity.StoreLocation;
 import org.izouir.inventory_service.entity.StoredProduct;
 import org.izouir.inventory_service.entity.StoredProductKey;
+import org.izouir.inventory_service.exception.InvalidRequestException;
 import org.izouir.inventory_service.exception.StoredProductNotFoundException;
 import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
@@ -179,10 +180,8 @@ public class StoredProductServiceImplTest {
                                 .build())
                         .quantity(0)
                         .build()));
-        when(storedProductRepository.save(Mockito.any(StoredProduct.class)))
-                .thenThrow(IllegalArgumentException.class);
 
-        assertThrows(IllegalArgumentException.class, () -> storedProductService.changeAmount(ChangeAmountRequestDto.builder()
+        assertThrows(InvalidRequestException.class, () -> storedProductService.changeAmount(ChangeAmountRequestDto.builder()
                 .productId(1L)
                 .storeId(1L)
                 .amount(10)
