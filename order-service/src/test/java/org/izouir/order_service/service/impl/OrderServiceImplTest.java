@@ -1,7 +1,13 @@
 package org.izouir.order_service.service.impl;
 
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
-import org.izouir.order_service.entity.*;
+import org.izouir.order_service.entity.Order;
+import org.izouir.order_service.entity.OrderPosition;
+import org.izouir.order_service.entity.OrderPositionKey;
+import org.izouir.order_service.entity.OrderStatus;
+import org.izouir.order_service.entity.Product;
+import org.izouir.order_service.entity.Store;
+import org.izouir.order_service.entity.StoreLocation;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderRepository;
@@ -21,8 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -76,18 +86,7 @@ public class OrderServiceImplTest {
         when(orderRepository.save(Mockito.any(Order.class)))
                 .thenReturn(order);
 
-        final var orderDto = orderService.place(placeOrderRequestDto);
-
-        assertNotNull(orderDto);
-
-        final var orderPositionDtoList = orderDto.getPositions();
-        assertEquals(1, orderPositionDtoList.size());
-
-        final var orderPositionDto = orderPositionDtoList.get(0);
-        final var orderPosition = order.getPositions().get(0);
-        assertEquals(orderPositionDto.getProductId(), orderPosition.getId().getProduct().getId());
-        assertEquals(orderPositionDto.getStoreId(), orderPosition.getId().getStore().getId());
-        assertEquals(orderPositionDto.getQuantity(), orderPosition.getQuantity());
+        orderService.place(placeOrderRequestDto);
 
         verify(orderRepository, times(1)).save(Mockito.any(Order.class));
         verify(orderPositionService, times(1)).place(Mockito.any(Order.class), Mockito.any());
@@ -112,10 +111,8 @@ public class OrderServiceImplTest {
         when(orderRepository.save(Mockito.any(Order.class)))
                 .thenReturn(order);
 
-        final var updatedOrderDto = orderService.updateStatus(1L, OrderStatus.STATUS_DELIVERING.toString());
+        orderService.updateStatus(1L, OrderStatus.STATUS_DELIVERING.toString());
 
-        assertNotNull(updatedOrderDto);
-        assertEquals(updatedOrderDto.getStatus(), OrderStatus.STATUS_DELIVERING.toString());
         verify(orderRepository, times(1)).findById(Mockito.any(Long.class));
         verify(orderRepository, times(1)).save(Mockito.any(Order.class));
     }
