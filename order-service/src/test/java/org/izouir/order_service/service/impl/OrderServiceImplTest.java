@@ -156,4 +156,54 @@ public class OrderServiceImplTest {
         assertEquals(0, orderHistoryDtoList.size());
         verify(orderRepository, times(1)).findAllByOrderByDateAsc();
     }
+
+    @Test
+    public void getOrdersFiltered_ShouldFind() {
+        when(orderRepository.findAllByUserId(Mockito.any(Long.class)))
+                .thenReturn(List.of(order));
+        when(orderRepository.findAllByTotalPrice(Mockito.any(Integer.class)))
+                .thenReturn(List.of(order));
+        when(orderRepository.findAllByStatus(Mockito.any(OrderStatus.class)))
+                .thenReturn(new ArrayList<>());
+        when(orderRepository.findAllByDate(Mockito.any(Timestamp.class)))
+                .thenReturn(new ArrayList<>());
+
+        final var filteredOrders = orderService.getOrdersFiltered(
+                "1",
+                "10",
+                "",
+                Timestamp.from(Instant.now()).toString());
+
+        assertNotNull(filteredOrders);
+        assertEquals(2, filteredOrders.size());
+        verify(orderRepository, times(1)).findAllByUserId(Mockito.any(Long.class));
+        verify(orderRepository, times(1)).findAllByTotalPrice(Mockito.any(Integer.class));
+        verify(orderRepository, times(0)).findAllByStatus(Mockito.any(OrderStatus.class));
+        verify(orderRepository, times(1)).findAllByDate(Mockito.any(Timestamp.class));
+    }
+
+    @Test
+    public void getOrdersFiltered_ShouldNotFound() {
+        when(orderRepository.findAllByUserId(Mockito.any(Long.class)))
+                .thenReturn(new ArrayList<>());
+        when(orderRepository.findAllByTotalPrice(Mockito.any(Integer.class)))
+                .thenReturn(new ArrayList<>());
+        when(orderRepository.findAllByStatus(Mockito.any(OrderStatus.class)))
+                .thenReturn(new ArrayList<>());
+        when(orderRepository.findAllByDate(Mockito.any(Timestamp.class)))
+                .thenReturn(new ArrayList<>());
+
+        final var filteredOrders = orderService.getOrdersFiltered(
+                "-1",
+                "0",
+                "STATUS_DECLINED",
+                Timestamp.from(Instant.now()).toString());
+
+        assertNotNull(filteredOrders);
+        assertEquals(0, filteredOrders.size());
+        verify(orderRepository, times(1)).findAllByUserId(Mockito.any(Long.class));
+        verify(orderRepository, times(1)).findAllByTotalPrice(Mockito.any(Integer.class));
+        verify(orderRepository, times(1)).findAllByStatus(Mockito.any(OrderStatus.class));
+        verify(orderRepository, times(1)).findAllByDate(Mockito.any(Timestamp.class));
+    }
 }
