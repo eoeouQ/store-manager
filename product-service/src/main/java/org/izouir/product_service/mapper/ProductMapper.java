@@ -2,7 +2,7 @@ package org.izouir.product_service.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.izouir.product_service.dto.ProductDto;
-import org.izouir.product_service.entity.Product;
+import org.izouir.shared_lib.entity.Product;
 
 @UtilityClass
 public class ProductMapper {

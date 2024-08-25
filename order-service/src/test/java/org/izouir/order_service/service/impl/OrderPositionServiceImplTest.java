@@ -1,10 +1,17 @@
 package org.izouir.order_service.service.impl;
 
-import org.izouir.order_service.entity.*;
+import org.izouir.order_service.dto.ChangeAmountRequestDto;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderPositionRepository;
 import org.izouir.order_service.repository.ProductRepository;
 import org.izouir.order_service.repository.StoreRepository;
+import org.izouir.shared_lib.entity.Order;
+import org.izouir.shared_lib.entity.OrderPosition;
+import org.izouir.shared_lib.entity.OrderPositionKey;
+import org.izouir.shared_lib.entity.OrderStatus;
+import org.izouir.shared_lib.entity.Product;
+import org.izouir.shared_lib.entity.Store;
+import org.izouir.shared_lib.entity.StoreLocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -21,7 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -35,6 +46,8 @@ public class OrderPositionServiceImplTest {
     private ProductRepository productRepository;
     @Mock
     private StoreRepository storeRepository;
+    @Mock
+    private KafkaTemplate<String, ChangeAmountRequestDto> kafkaTemplate;
 
     private Order order;
     private Product product;
@@ -78,6 +91,8 @@ public class OrderPositionServiceImplTest {
                 .thenReturn(Optional.of(store));
         when(orderPositionRepository.save(Mockito.any(OrderPosition.class)))
                 .thenReturn(order.getPositions().get(0));
+        when(kafkaTemplate.send(Mockito.anyString(), Mockito.any(ChangeAmountRequestDto.class)))
+                .thenCallRealMethod();
 
         orderPositionService.place(order, OrderPositionMapper.toDtoList(order.getPositions()));
 

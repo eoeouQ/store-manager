@@ -1,7 +1,7 @@
 package org.izouir.product_service.mapper;
 
 import org.izouir.product_service.dto.ProductDto;
-import org.izouir.product_service.entity.Product;
+import org.izouir.shared_lib.entity.Product;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

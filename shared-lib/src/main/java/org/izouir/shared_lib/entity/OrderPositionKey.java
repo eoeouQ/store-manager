@@ -1,4 +1,4 @@
-package org.izouir.order_service.entity;
+package org.izouir.shared_lib.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;

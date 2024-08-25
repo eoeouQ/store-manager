@@ -1,6 +1,6 @@
 package org.izouir.inventory_service.mapper;
 
-import org.izouir.inventory_service.entity.Product;
+import org.izouir.shared_lib.entity.Product;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

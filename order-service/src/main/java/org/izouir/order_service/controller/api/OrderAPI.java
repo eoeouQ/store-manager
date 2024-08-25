@@ -28,7 +28,7 @@ public interface OrderAPI {
     @GetMapping("/history")
     ResponseEntity<List<OrderDto>> getOrderHistory();
 
-    @Operation(summary = "")
+    @Operation(summary = "Filtered orders")
     @GetMapping
     ResponseEntity<List<OrderDto>> getOrdersFiltered(@RequestParam(value = "userId", required = false, defaultValue = "") final String userId,
                                                      @RequestParam(value = "totalPrice", required = false, defaultValue = "") final String totalPrice,

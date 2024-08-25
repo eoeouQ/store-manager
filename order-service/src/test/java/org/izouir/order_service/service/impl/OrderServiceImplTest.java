@@ -1,17 +1,17 @@
 package org.izouir.order_service.service.impl;
 
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderPosition;
-import org.izouir.order_service.entity.OrderPositionKey;
-import org.izouir.order_service.entity.OrderStatus;
-import org.izouir.order_service.entity.Product;
-import org.izouir.order_service.entity.Store;
-import org.izouir.order_service.entity.StoreLocation;
 import org.izouir.order_service.exception.InvalidRequestException;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderPositionMapper;
 import org.izouir.order_service.repository.OrderRepository;
+import org.izouir.shared_lib.entity.Order;
+import org.izouir.shared_lib.entity.OrderPosition;
+import org.izouir.shared_lib.entity.OrderPositionKey;
+import org.izouir.shared_lib.entity.OrderStatus;
+import org.izouir.shared_lib.entity.Product;
+import org.izouir.shared_lib.entity.Store;
+import org.izouir.shared_lib.entity.StoreLocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

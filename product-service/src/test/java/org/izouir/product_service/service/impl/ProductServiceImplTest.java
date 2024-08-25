@@ -1,9 +1,9 @@
 package org.izouir.product_service.service.impl;
 
 import org.izouir.product_service.dto.ProductDto;
-import org.izouir.product_service.entity.Product;
 import org.izouir.product_service.exception.ProductNotFoundException;
 import org.izouir.product_service.repository.ProductRepository;
+import org.izouir.shared_lib.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

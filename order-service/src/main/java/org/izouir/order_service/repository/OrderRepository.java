@@ -1,7 +1,7 @@
 package org.izouir.order_service.repository;
 
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderStatus;
+import org.izouir.shared_lib.entity.Order;
+import org.izouir.shared_lib.entity.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

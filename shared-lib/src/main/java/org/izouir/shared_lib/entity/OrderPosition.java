@@ -1,4 +1,4 @@
-package org.izouir.order_service.entity;
+package org.izouir.shared_lib.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;

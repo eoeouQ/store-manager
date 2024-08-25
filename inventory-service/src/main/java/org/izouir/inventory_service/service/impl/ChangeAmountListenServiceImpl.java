@@ -2,9 +2,9 @@ package org.izouir.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
 import org.izouir.inventory_service.service.ChangeAmountListenService;
 import org.izouir.inventory_service.service.StoredProductService;
+import org.izouir.shared_lib.entity.InventoryOperation;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

@@ -1,17 +1,17 @@
 package org.izouir.inventory_service.service.impl;
 
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
-import org.izouir.inventory_service.entity.Product;
-import org.izouir.inventory_service.entity.Store;
-import org.izouir.inventory_service.entity.StoreLocation;
-import org.izouir.inventory_service.entity.StoredProduct;
-import org.izouir.inventory_service.entity.StoredProductKey;
 import org.izouir.inventory_service.exception.InvalidRequestException;
 import org.izouir.inventory_service.exception.StoredProductNotFoundException;
 import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
 import org.izouir.inventory_service.repository.StoredProductRepository;
+import org.izouir.shared_lib.entity.InventoryOperation;
+import org.izouir.shared_lib.entity.Product;
+import org.izouir.shared_lib.entity.Store;
+import org.izouir.shared_lib.entity.StoreLocation;
+import org.izouir.shared_lib.entity.StoredProduct;
+import org.izouir.shared_lib.entity.StoredProductKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

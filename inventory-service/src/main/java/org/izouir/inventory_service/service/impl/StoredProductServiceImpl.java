@@ -2,9 +2,6 @@ package org.izouir.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
-import org.izouir.inventory_service.entity.StoredProduct;
-import org.izouir.inventory_service.entity.StoredProductKey;
 import org.izouir.inventory_service.exception.InvalidRequestException;
 import org.izouir.inventory_service.exception.ProductNotFoundException;
 import org.izouir.inventory_service.exception.StoreNotFoundException;
@@ -13,6 +10,9 @@ import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
 import org.izouir.inventory_service.repository.StoredProductRepository;
 import org.izouir.inventory_service.service.StoredProductService;
+import org.izouir.shared_lib.entity.InventoryOperation;
+import org.izouir.shared_lib.entity.StoredProduct;
+import org.izouir.shared_lib.entity.StoredProductKey;
 import org.springframework.stereotype.Service;
 
 @Service

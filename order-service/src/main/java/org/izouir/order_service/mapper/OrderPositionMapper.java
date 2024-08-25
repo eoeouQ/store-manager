@@ -2,7 +2,11 @@ package org.izouir.order_service.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.izouir.order_service.dto.OrderPositionDto;
-import org.izouir.order_service.entity.*;
+import org.izouir.shared_lib.entity.Order;
+import org.izouir.shared_lib.entity.OrderPosition;
+import org.izouir.shared_lib.entity.OrderPositionKey;
+import org.izouir.shared_lib.entity.Product;
+import org.izouir.shared_lib.entity.Store;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package org.izouir.inventory_service.repository;
 
-import org.izouir.inventory_service.entity.Product;
+import org.izouir.shared_lib.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,12 @@
 package org.izouir.order_service.mapper;
 
-import org.izouir.order_service.entity.*;
+import org.izouir.shared_lib.entity.Order;
+import org.izouir.shared_lib.entity.OrderPosition;
+import org.izouir.shared_lib.entity.OrderPositionKey;
+import org.izouir.shared_lib.entity.OrderStatus;
+import org.izouir.shared_lib.entity.Product;
+import org.izouir.shared_lib.entity.Store;
+import org.izouir.shared_lib.entity.StoreLocation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
