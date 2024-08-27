@@ -15,8 +15,8 @@ extra["springCloudVersion"] = "2023.0.2"
 
 dependencies {
     // Shared Lib
-    implementation(project(":shared-lib"))
-    testImplementation(project(":shared-lib"))
+    implementation(project(":store-manager-entities"))
+    testImplementation(project(":store-manager-entities"))
 
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.32")

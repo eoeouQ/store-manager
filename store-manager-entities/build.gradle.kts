@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     id("java")
     id("org.springframework.boot") version "3.3.0"
@@ -6,6 +8,13 @@ plugins {
 
 group = "org.izouir"
 version = "1.0"
+
+tasks.getByName<BootJar>("bootJar") {
+    enabled = false
+}
+tasks.getByName<Jar>("jar") {
+    enabled = true
+}
 
 repositories {
     mavenCentral()

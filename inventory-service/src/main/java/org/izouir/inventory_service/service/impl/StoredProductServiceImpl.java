@@ -10,9 +10,9 @@ import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
 import org.izouir.inventory_service.repository.StoredProductRepository;
 import org.izouir.inventory_service.service.StoredProductService;
-import org.izouir.shared_lib.entity.InventoryOperation;
-import org.izouir.shared_lib.entity.StoredProduct;
-import org.izouir.shared_lib.entity.StoredProductKey;
+import org.izouir.store_manager_entities.entity.InventoryOperation;
+import org.izouir.store_manager_entities.entity.StoredProduct;
+import org.izouir.store_manager_entities.entity.StoredProductKey;
 import org.springframework.stereotype.Service;
 
 @Service

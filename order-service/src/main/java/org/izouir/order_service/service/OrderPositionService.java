@@ -1,8 +1,8 @@
 package org.izouir.order_service.service;
 
 import org.izouir.order_service.dto.OrderPositionDto;
-import org.izouir.shared_lib.entity.Order;
-import org.izouir.shared_lib.entity.OrderPosition;
+import org.izouir.store_manager_entities.entity.Order;
+import org.izouir.store_manager_entities.entity.OrderPosition;
 
 import java.util.List;
 

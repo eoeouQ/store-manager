@@ -1,4 +1,4 @@
 rootProject.name = "product-service"
 
-include("shared-lib")
-project(":shared-lib").projectDir = file("../shared-lib")
+include("store-manager-entities")
+project(":store-manager-entities").projectDir = file("../store-manager-entities")

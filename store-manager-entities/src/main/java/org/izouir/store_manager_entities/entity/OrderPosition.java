@@ -1,4 +1,4 @@
-package org.izouir.shared_lib.entity;
+package org.izouir.store_manager_entities.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "stored_product")
-public class StoredProduct {
+@Table(name = "order_position")
+public class OrderPosition {
     @EmbeddedId
-    private StoredProductKey id;
+    private OrderPositionKey id;
 
-    @Column(name = "quantity", columnDefinition = "INT CHECK ( quantity >= 0 )")
+    @Column(name = "quantity", columnDefinition = "INT CHECK ( quantity > 0)")
     private Integer quantity;
 }

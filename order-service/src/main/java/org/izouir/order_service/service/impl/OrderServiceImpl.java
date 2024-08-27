@@ -11,8 +11,8 @@ import org.izouir.order_service.mapper.OrderMapper;
 import org.izouir.order_service.repository.OrderRepository;
 import org.izouir.order_service.service.OrderPositionService;
 import org.izouir.order_service.service.OrderService;
-import org.izouir.shared_lib.entity.Order;
-import org.izouir.shared_lib.entity.OrderStatus;
+import org.izouir.store_manager_entities.entity.Order;
+import org.izouir.store_manager_entities.entity.OrderStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

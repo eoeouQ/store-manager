@@ -1,4 +1,4 @@
-package org.izouir.shared_lib.entity;
+package org.izouir.store_manager_entities.entity;
 
 public enum OrderStatus {
     STATUS_CREATED,
