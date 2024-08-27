@@ -1,5 +1,6 @@
 package org.izouir.order_service.service;
 
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 
@@ -14,8 +15,5 @@ public interface OrderService {
 
     List<OrderDto> getOrderHistory();
 
-    List<OrderDto> getOrdersFiltered(final String userId,
-                                     final String totalPrice,
-                                     final String status,
-                                     final String date);
+    List<OrderDto> getOrdersFiltered(final FiltersRequestDto request);
 }

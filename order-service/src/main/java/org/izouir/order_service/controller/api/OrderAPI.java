@@ -2,6 +2,7 @@ package org.izouir.order_service.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,6 @@ public interface OrderAPI {
     ResponseEntity<List<OrderDto>> getOrderHistory();
 
     @Operation(summary = "Filtered orders")
-    @GetMapping
-    ResponseEntity<List<OrderDto>> getOrdersFiltered(@RequestParam(value = "userId", required = false, defaultValue = "") final String userId,
-                                                     @RequestParam(value = "totalPrice", required = false, defaultValue = "") final String totalPrice,
-                                                     @RequestParam(value = "status", required = false, defaultValue = "") final String status,
-                                                     @RequestParam(value = "date", required = false, defaultValue = "") final String date);
+    @PostMapping("/filter")
+    ResponseEntity<List<OrderDto>> getOrdersFiltered(@RequestBody final FiltersRequestDto request);
 }

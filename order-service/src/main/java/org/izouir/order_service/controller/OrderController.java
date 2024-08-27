@@ -2,6 +2,7 @@ package org.izouir.order_service.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.izouir.order_service.controller.api.OrderAPI;
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.service.OrderService;
@@ -40,10 +41,7 @@ public class OrderController implements OrderAPI {
     }
 
     @Override
-    public ResponseEntity<List<OrderDto>> getOrdersFiltered(final String userId,
-                                                            final String totalPrice,
-                                                            final String status,
-                                                            final String date) {
-        return ResponseEntity.ok(orderService.getOrdersFiltered(userId, totalPrice, status, date));
+    public ResponseEntity<List<OrderDto>> getOrdersFiltered(final FiltersRequestDto request) {
+        return ResponseEntity.ok(orderService.getOrdersFiltered(request));
     }
 }

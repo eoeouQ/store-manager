@@ -1,5 +1,7 @@
 package org.izouir.order_service.service.impl;
 
+import org.izouir.order_service.dto.FilterRequestDto;
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.izouir.order_service.exception.InvalidRequestException;
 import org.izouir.order_service.exception.OrderNotFoundException;
@@ -21,6 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -45,6 +48,8 @@ public class OrderServiceImplTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderPositionServiceImpl orderPositionService;
+    @Mock
+    private SpecificationServiceImpl<Order> orderSpecificationService;
 
     private Order order;
 
@@ -159,51 +164,63 @@ public class OrderServiceImplTest {
 
     @Test
     public void getOrdersFiltered_ShouldFind() {
-        when(orderRepository.findAllByUserId(Mockito.any(Long.class)))
-                .thenReturn(List.of(order));
-        when(orderRepository.findAllByTotalPrice(Mockito.any(Integer.class)))
-                .thenReturn(List.of(order));
-        when(orderRepository.findAllByStatus(Mockito.any(OrderStatus.class)))
-                .thenReturn(new ArrayList<>());
-        when(orderRepository.findAllByDate(Mockito.any(Timestamp.class)))
-                .thenReturn(new ArrayList<>());
+        when(orderSpecificationService.getSearchSpecification(Mockito.anyList()))
+                .thenCallRealMethod();
+        when(orderRepository.findAll(Mockito.any(Specification.class)))
+                .thenReturn(List.of(order, order));
 
-        final var filteredOrders = orderService.getOrdersFiltered(
-                "1",
-                "10",
-                "",
-                Timestamp.from(Instant.now()).toString());
+        final var filters = new ArrayList<FilterRequestDto>();
+        filters.add(FilterRequestDto.builder()
+                .column("userId")
+                .value("1")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("totalPrice")
+                .value("10")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("date")
+                .value(Timestamp.from(Instant.now()).toString())
+                .build());
+        final var filteredOrders = orderService.getOrdersFiltered(FiltersRequestDto.builder()
+                .filters(filters)
+                .build());
 
         assertNotNull(filteredOrders);
         assertEquals(2, filteredOrders.size());
-        verify(orderRepository, times(1)).findAllByUserId(Mockito.any(Long.class));
-        verify(orderRepository, times(1)).findAllByTotalPrice(Mockito.any(Integer.class));
-        verify(orderRepository, times(0)).findAllByStatus(Mockito.any(OrderStatus.class));
-        verify(orderRepository, times(1)).findAllByDate(Mockito.any(Timestamp.class));
+        verify(orderRepository, times(1)).findAll(Mockito.any(Specification.class));
     }
 
     @Test
     public void getOrdersFiltered_ShouldNotFound() {
-        when(orderRepository.findAllByUserId(Mockito.any(Long.class)))
-                .thenReturn(new ArrayList<>());
-        when(orderRepository.findAllByTotalPrice(Mockito.any(Integer.class)))
-                .thenReturn(new ArrayList<>());
-        when(orderRepository.findAllByStatus(Mockito.any(OrderStatus.class)))
-                .thenReturn(new ArrayList<>());
-        when(orderRepository.findAllByDate(Mockito.any(Timestamp.class)))
+        when(orderSpecificationService.getSearchSpecification(Mockito.anyList()))
+                .thenCallRealMethod();
+        when(orderRepository.findAll(Mockito.any(Specification.class)))
                 .thenReturn(new ArrayList<>());
 
-        final var filteredOrders = orderService.getOrdersFiltered(
-                "-1",
-                "0",
-                "STATUS_DECLINED",
-                Timestamp.from(Instant.now()).toString());
+        final var filters = new ArrayList<FilterRequestDto>();
+        filters.add(FilterRequestDto.builder()
+                .column("userId")
+                .value("-1")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("totalPrice")
+                .value("0")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("status")
+                .value("STATUS_DECLINED")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("date")
+                .value(Timestamp.from(Instant.now()).toString())
+                .build());
+        final var filteredOrders = orderService.getOrdersFiltered(FiltersRequestDto.builder()
+                .filters(filters)
+                .build());
 
         assertNotNull(filteredOrders);
         assertEquals(0, filteredOrders.size());
-        verify(orderRepository, times(1)).findAllByUserId(Mockito.any(Long.class));
-        verify(orderRepository, times(1)).findAllByTotalPrice(Mockito.any(Integer.class));
-        verify(orderRepository, times(1)).findAllByStatus(Mockito.any(OrderStatus.class));
-        verify(orderRepository, times(1)).findAllByDate(Mockito.any(Timestamp.class));
+        verify(orderRepository, times(1)).findAll(Mockito.any(Specification.class));
     }
 }
