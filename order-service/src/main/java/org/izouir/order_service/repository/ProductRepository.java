@@ -1,6 +1,6 @@
 package org.izouir.order_service.repository;
 
-import org.izouir.order_service.entity.Product;
+import org.izouir.store_manager_entities.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

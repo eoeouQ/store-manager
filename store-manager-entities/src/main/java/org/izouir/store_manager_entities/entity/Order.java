@@ -1,4 +1,4 @@
-package org.izouir.order_service.entity;
+package org.izouir.store_manager_entities.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -2,10 +2,17 @@ package org.izouir.order_service.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -22,9 +29,13 @@ public interface OrderAPI {
 
     @Operation(summary = "Order status update")
     @PutMapping("/{orderId}")
-    ResponseEntity<Void> updateStatus(@PathVariable final Long orderId, @RequestBody final String status);
+    ResponseEntity<Void> updateStatus(@PathVariable("orderId") final Long orderId, @RequestBody final String status);
 
     @Operation(summary = "Order history")
     @GetMapping("/history")
     ResponseEntity<List<OrderDto>> getOrderHistory();
+
+    @Operation(summary = "Filtered orders")
+    @PostMapping("/search")
+    ResponseEntity<List<OrderDto>> getOrdersFiltered(@RequestBody final FiltersRequestDto request);
 }

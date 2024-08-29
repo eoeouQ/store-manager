@@ -1,6 +1,10 @@
 package org.izouir.inventory_service.mapper;
 
-import org.izouir.inventory_service.entity.*;
+import org.izouir.store_manager_entities.entity.Product;
+import org.izouir.store_manager_entities.entity.Store;
+import org.izouir.store_manager_entities.entity.StoreLocation;
+import org.izouir.store_manager_entities.entity.StoredProduct;
+import org.izouir.store_manager_entities.entity.StoredProductKey;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

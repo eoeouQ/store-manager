@@ -30,16 +30,24 @@
               <build path="$PROJECT_DIR$/inventory-service" name="inventory-service">
                 <projects>
                   <project path="$PROJECT_DIR$/inventory-service" />
+                  <project path="$PROJECT_DIR$/store-manager-entities" />
                 </projects>
               </build>
               <build path="$PROJECT_DIR$/order-service" name="order-service">
                 <projects>
                   <project path="$PROJECT_DIR$/order-service" />
+                  <project path="$PROJECT_DIR$/store-manager-entities" />
                 </projects>
               </build>
               <build path="$PROJECT_DIR$/product-service" name="product-service">
                 <projects>
                   <project path="$PROJECT_DIR$/product-service" />
+                  <project path="$PROJECT_DIR$/store-manager-entities" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/store-manager-entities" name="store-manager-entities">
+                <projects>
+                  <project path="$PROJECT_DIR$/store-manager-entities" />
                 </projects>
               </build>
             </builds>
@@ -57,6 +65,7 @@
             <option value="$PROJECT_DIR$/inventory-service" />
             <option value="$PROJECT_DIR$/order-service" />
             <option value="$PROJECT_DIR$/product-service" />
+            <option value="$PROJECT_DIR$/store-manager-entities" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -89,6 +98,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/order-service" />
+            <option value="$PROJECT_DIR$/store-manager-entities" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -97,6 +107,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/product-service" />
+            <option value="$PROJECT_DIR$/store-manager-entities" />
           </set>
         </option>
       </GradleProjectSettings>

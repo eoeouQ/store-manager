@@ -88,7 +88,9 @@ services:
 
   product-service:
     container_name: product-service
-    build: ../product-service
+    build:
+      context: ../
+      dockerfile: ./product-service/Dockerfile
     restart: on-failure
     environment:
       APP_HOSTNAME: ${APP_HOSTNAME}
@@ -103,7 +105,9 @@ services:
 
   inventory-service:
     container_name: inventory-service
-    build: ../inventory-service
+    build:
+      context: ../
+      dockerfile: /inventory-service/Dockerfile
     restart: on-failure
     environment:
       APP_HOSTNAME: ${APP_HOSTNAME}
@@ -119,7 +123,9 @@ services:
 
   order-service:
     container_name: order-service
-    build: ../order-service
+    build:
+      context: ../
+      dockerfile: /order-service/Dockerfile
     restart: on-failure
     environment:
       APP_HOSTNAME: ${APP_HOSTNAME}

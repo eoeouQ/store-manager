@@ -1,4 +1,4 @@
-package org.izouir.inventory_service.entity;
+package org.izouir.store_manager_entities.entity;
 
 public enum StoreLocation {
     LOCATION_BELARUS,

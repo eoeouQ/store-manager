@@ -2,9 +2,7 @@ package org.izouir.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
-import org.izouir.inventory_service.entity.StoredProduct;
-import org.izouir.inventory_service.entity.StoredProductKey;
+import org.izouir.inventory_service.exception.InvalidRequestException;
 import org.izouir.inventory_service.exception.ProductNotFoundException;
 import org.izouir.inventory_service.exception.StoreNotFoundException;
 import org.izouir.inventory_service.exception.StoredProductNotFoundException;
@@ -12,6 +10,9 @@ import org.izouir.inventory_service.repository.ProductRepository;
 import org.izouir.inventory_service.repository.StoreRepository;
 import org.izouir.inventory_service.repository.StoredProductRepository;
 import org.izouir.inventory_service.service.StoredProductService;
+import org.izouir.store_manager_entities.entity.InventoryOperation;
+import org.izouir.store_manager_entities.entity.StoredProduct;
+import org.izouir.store_manager_entities.entity.StoredProductKey;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +36,7 @@ public class StoredProductServiceImpl implements StoredProductService {
             case OPERATION_ADD -> storedProduct.setQuantity(storedProduct.getQuantity() + request.getAmount());
             case OPERATION_SUBTRACT -> {
                 if (storedProduct.getQuantity() - request.getAmount() < 0) {
-                    throw new IllegalArgumentException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
+                    throw new InvalidRequestException(EXCEEDING_CHANGE_AMOUNT_MESSAGE);
                 }
                 storedProduct.setQuantity(storedProduct.getQuantity() - request.getAmount());
             }

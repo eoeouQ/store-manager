@@ -1,7 +1,7 @@
 package org.izouir.inventory_service.service;
 
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
+import org.izouir.store_manager_entities.entity.InventoryOperation;
 
 
 public interface StoredProductService {

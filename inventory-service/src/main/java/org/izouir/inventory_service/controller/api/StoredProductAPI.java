@@ -3,7 +3,7 @@ package org.izouir.inventory_service.controller.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.izouir.inventory_service.dto.ChangeAmountRequestDto;
-import org.izouir.inventory_service.entity.InventoryOperation;
+import org.izouir.store_manager_entities.entity.InventoryOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -2,16 +2,18 @@ package org.izouir.order_service.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.izouir.order_service.dto.FiltersRequestDto;
 import org.izouir.order_service.dto.OrderDto;
 import org.izouir.order_service.dto.OrderPositionDto;
 import org.izouir.order_service.dto.PlaceOrderRequestDto;
-import org.izouir.order_service.entity.Order;
-import org.izouir.order_service.entity.OrderStatus;
+import org.izouir.order_service.exception.InvalidRequestException;
 import org.izouir.order_service.exception.OrderNotFoundException;
 import org.izouir.order_service.mapper.OrderMapper;
 import org.izouir.order_service.repository.OrderRepository;
 import org.izouir.order_service.service.OrderPositionService;
 import org.izouir.order_service.service.OrderService;
+import org.izouir.store_manager_entities.entity.Order;
+import org.izouir.store_manager_entities.entity.OrderStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -23,6 +25,7 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderPositionService orderPositionService;
+    private final SpecificationServiceImpl<Order> orderSpecificationService;
 
     private static final String ORDER_NOT_FOUND_MESSAGE = "Order with id = %s not found";
     private static final String ZERO_TOTAL_PRICE_MESSAGE = "Total price of the order must be greater than 0";
@@ -32,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     public void place(final PlaceOrderRequestDto request) {
         final var totalPrice = calculateOrderTotalPrice(request.getPositions());
         if (totalPrice <= 0) {
-            throw new IllegalArgumentException(ZERO_TOTAL_PRICE_MESSAGE);
+            throw new InvalidRequestException(ZERO_TOTAL_PRICE_MESSAGE);
         }
         var order = Order.builder()
                 .userId(request.getUserId())
@@ -68,6 +71,14 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrderHistory() {
         final var orderHistory = orderRepository.findAllByOrderByDateAsc();
         return OrderMapper.toDtoList(orderHistory);
+    }
+
+    @Override
+    public List<OrderDto> getOrdersFiltered(final FiltersRequestDto request) {
+        final var filterSpecification = orderSpecificationService
+                .getSearchSpecification(request.getFilters());
+        final var orders = orderRepository.findAll(filterSpecification);
+        return OrderMapper.toDtoList(orders);
     }
 
     private Integer calculateOrderTotalPrice(final List<OrderPositionDto> positions) {

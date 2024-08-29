@@ -1,4 +1,4 @@
-package org.izouir.inventory_service.entity;
+package org.izouir.store_manager_entities.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
@@ -12,12 +12,16 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class StoredProductKey {
+public class OrderPositionKey {
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", columnDefinition = "BIGINT REFERENCES \"order\" (id)")
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", columnDefinition = "BIGINT REFERENCES product (id)")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "store_id", columnDefinition = "BIGINT REFERENCES store (id)")
     private Store store;
 }
