@@ -3,6 +3,7 @@ package org.izouir.product_service.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.izouir.product_service.controller.api.ProductAPI;
+import org.izouir.product_service.dto.FiltersRequestDto;
 import org.izouir.product_service.dto.ProductDto;
 import org.izouir.product_service.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,10 @@ public class ProductController implements ProductAPI {
     public ResponseEntity<Void> delete(@PathVariable("productId") final Long productId) {
         productService.delete(productId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getProductsFiltered(final FiltersRequestDto request) {
+        return ResponseEntity.ok(productService.getProductsFiltered(request));
     }
 }

@@ -2,11 +2,13 @@ package org.izouir.product_service.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.izouir.product_service.dto.FiltersRequestDto;
 import org.izouir.product_service.dto.ProductDto;
 import org.izouir.product_service.exception.ProductNotFoundException;
 import org.izouir.product_service.mapper.ProductMapper;
 import org.izouir.product_service.repository.ProductRepository;
 import org.izouir.product_service.service.ProductService;
+import org.izouir.store_manager_entities.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final SpecificationServiceImpl<Product> orderSpecificationService;
 
     private static final String PRODUCT_NOT_FOUND_MESSAGE = "Product with id %s not found";
 
@@ -57,5 +60,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(final Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductDto> getProductsFiltered(final FiltersRequestDto request) {
+        final var filterSpecification = orderSpecificationService
+                .getSearchSpecification(request.getFilters());
+        final var orders = productRepository.findAll(filterSpecification);
+        return ProductMapper.toDtoList(orders);
     }
 }

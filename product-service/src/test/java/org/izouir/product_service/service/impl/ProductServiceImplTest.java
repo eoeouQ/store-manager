@@ -1,5 +1,7 @@
 package org.izouir.product_service.service.impl;
 
+import org.izouir.product_service.dto.FilterRequestDto;
+import org.izouir.product_service.dto.FiltersRequestDto;
 import org.izouir.product_service.dto.ProductDto;
 import org.izouir.product_service.exception.ProductNotFoundException;
 import org.izouir.product_service.repository.ProductRepository;
@@ -12,8 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +35,8 @@ public class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private SpecificationServiceImpl<Product> productSpecificationService;
 
     @Test
     public void findAll_ShouldFind() {
@@ -225,5 +231,63 @@ public class ProductServiceImplTest {
         productService.delete(1L);
 
         verify(productRepository, times(1)).deleteById(Mockito.any(Long.class));
+    }
+
+    @Test
+    public void getOrdersFiltered_ShouldFind() {
+        when(productSpecificationService.getSearchSpecification(Mockito.anyList()))
+                .thenCallRealMethod();
+        when(productRepository.findAll(Mockito.any(Specification.class)))
+                .thenReturn(List.of(new Product(), new Product(), new Product()));
+
+        final var filters = new ArrayList<FilterRequestDto>();
+        filters.add(FilterRequestDto.builder()
+                .column("id")
+                .value("1")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("label")
+                .value("smartphone")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("price")
+                .value("10")
+                .build());
+        final var filteredOrders = productService.getProductsFiltered(FiltersRequestDto.builder()
+                .filters(filters)
+                .build());
+
+        assertNotNull(filteredOrders);
+        assertEquals(3, filteredOrders.size());
+        verify(productRepository, times(1)).findAll(Mockito.any(Specification.class));
+    }
+
+    @Test
+    public void getOrdersFiltered_ShouldNotFound() {
+        when(productSpecificationService.getSearchSpecification(Mockito.anyList()))
+                .thenCallRealMethod();
+        when(productRepository.findAll(Mockito.any(Specification.class)))
+                .thenReturn(new ArrayList<>());
+
+        final var filters = new ArrayList<FilterRequestDto>();
+        filters.add(FilterRequestDto.builder()
+                .column("id")
+                .value("-1")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("label")
+                .value("not-smartphone")
+                .build());
+        filters.add(FilterRequestDto.builder()
+                .column("price")
+                .value("0")
+                .build());
+        final var filteredOrders = productService.getProductsFiltered(FiltersRequestDto.builder()
+                .filters(filters)
+                .build());
+
+        assertNotNull(filteredOrders);
+        assertEquals(0, filteredOrders.size());
+        verify(productRepository, times(1)).findAll(Mockito.any(Specification.class));
     }
 }
