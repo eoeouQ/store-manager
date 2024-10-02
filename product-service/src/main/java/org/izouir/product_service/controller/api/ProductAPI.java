@@ -3,6 +3,7 @@ package org.izouir.product_service.controller.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.izouir.product_service.dto.FiltersRequestDto;
 import org.izouir.product_service.dto.ProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,4 +38,8 @@ public interface ProductAPI {
     @Operation(summary = "Product deletion by id")
     @DeleteMapping("/{productId}")
     ResponseEntity<Void> delete(@PathVariable("productId") final Long productId);
+
+    @Operation(summary = "Filtered products")
+    @PostMapping("/search")
+    ResponseEntity<List<ProductDto>> getProductsFiltered(@RequestBody final FiltersRequestDto request);
 }

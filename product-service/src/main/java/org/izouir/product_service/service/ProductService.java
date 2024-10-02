@@ -1,5 +1,6 @@
 package org.izouir.product_service.service;
 
+import org.izouir.product_service.dto.FiltersRequestDto;
 import org.izouir.product_service.dto.ProductDto;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface ProductService {
     ProductDto update(final ProductDto productDto);
 
     void delete(final Long id);
+
+    List<ProductDto> getProductsFiltered(final FiltersRequestDto request);
 }
